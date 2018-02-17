@@ -9,7 +9,7 @@
     "test": "lerna run test",
     "build": "lerna run build",
     "test:coverage": "lerna run test:coverage",
-    "full-build": "yarn cleanup && yarn bootstrap && yarn test && yarn build"
+    "full-build": "yarn cleanup && yarn bootstrap && yarn test:coverage && yarn build"
   },
   "devDependencies": {
     "del-cli": "^1.1.0",
