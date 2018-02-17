@@ -4,12 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "cleanup": "lerna exec -- del-cli dist node_modules coverage",
     "bootstrap": "lerna bootstrap",
     "test": "lerna run test",
     "build": "lerna run build",
-    "test:coverage": "lerna run test:coverage"
+    "test:coverage": "lerna run test:coverage",
+    "full-build": "yarn cleanup && yarn bootstrap && yarn test && yarn build"
   },
   "devDependencies": {
+    "del-cli": "^1.1.0",
     "lerna": "^2.9.0"
   }
 }

@@ -1,8 +1,8 @@
 {
   "name": "ts-retry-promise",
   "version": "0.0.1",
-  "main": "index.js",
   "license": "MIT",
+  "typings": "dist/index",
   "scripts": {
     "build": "tsc",
     "test": "mocha",
