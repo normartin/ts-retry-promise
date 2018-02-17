@@ -1,8 +1,8 @@
 {
   "name": "ts-tools",
   "version": "0.0.1",
-  "main": "index.js",
   "license": "MIT",
+  "repository": "https://bitbucket.org/martinmo/ts-tools",
   "scripts": {
     "cleanup": "lerna exec -- del-cli dist node_modules coverage",
     "bootstrap": "lerna bootstrap",

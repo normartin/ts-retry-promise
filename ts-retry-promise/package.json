@@ -2,7 +2,7 @@
   "name": "ts-retry-promise",
   "version": "0.0.1",
   "license": "MIT",
-  "typings": "dist/index",
+  "repository": "https://bitbucket.org/martinmo/ts-tools",
   "scripts": {
     "build": "tsc",
     "test": "mocha",
