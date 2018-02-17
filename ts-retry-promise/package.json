@@ -1,6 +1,6 @@
 {
   "name": "ts-retry-promise",
-  "version": "0.0.5-PRERELEASE",
+  "version": "0.0.5",
   "license": "MIT",
   "repository": "https://bitbucket.org/martinmo/ts-tools",
   "keywords": [
