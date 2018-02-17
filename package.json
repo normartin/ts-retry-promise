@@ -1,0 +1,15 @@
+{
+  "name": "ts-tools",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "test": "lerna run test",
+    "build": "lerna run build",
+    "test:coverage": "lerna run test:coverage"
+  },
+  "devDependencies": {
+    "lerna": "^2.9.0"
+  }
+}

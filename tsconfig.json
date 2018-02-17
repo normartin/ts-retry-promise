@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "declaration": true,
+    "lib": [
+      "es2015",
+      "es6"
+    ]
+  }
+}
