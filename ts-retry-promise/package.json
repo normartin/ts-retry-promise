@@ -3,6 +3,7 @@
   "version": "0.0.4-PRE3",
   "license": "MIT",
   "repository": "https://bitbucket.org/martinmo/ts-tools",
+  "keywords": ["promise", "retry", "typescript"],
   "files": [
     "dist"
   ],

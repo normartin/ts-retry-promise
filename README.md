@@ -14,7 +14,7 @@ Repeats the call to a function that returns a promise until a resolved promise i
 
 describe("Retry Promise Demo", () => {
 
-    it("will retry until no exception or limit reached", async function () {
+    it("will retry until no exception or limit reached", async () => {
 
         await retry(async () => {
             const title = await browser.$("h1");
@@ -23,7 +23,19 @@ describe("Retry Promise Demo", () => {
 
     });
 
-    it("will retry until condition is met or limit reached", async function () {
+    it("can return a result", async () => {
+
+        const title = await retry(async () => {
+            const title = await browser.$("h1");
+            expect(title).to.be.not.empty;
+            return title;
+        });
+
+        // do some stuff with the result
+        expect(title).to.eq("Loaded");
+    });
+
+    it("will retry until condition is met or limit reached", async () => {
 
         await retry(
             () => browser.$("ul"),
@@ -31,7 +43,7 @@ describe("Retry Promise Demo", () => {
 
     });
 
-    it("can be configured", async function () {
+    it("can be configured and has defaults", async () => {
 
         await retry(async () => {
             // your code
