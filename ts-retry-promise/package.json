@@ -7,7 +7,7 @@
     "build": "tsc && cpx ../LICENSE.txt ./dist && cpx ../README.md ./dist && cpx package.json ./dist",
     "test": "mocha",
     "test:coverage": "nyc mocha",
-    "do-publish": "cd dist && yarn publish"
+    "do-publish": "yarn publish ./dist"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",
