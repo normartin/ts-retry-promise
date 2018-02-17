@@ -8,8 +8,6 @@ image: node:6.9.4
 pipelines:
   default:
     - step:
-        caches:
-          - node
         script: 
           - yarn install
           - yarn full-build
