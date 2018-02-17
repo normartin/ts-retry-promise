@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "repository": "https://bitbucket.org/martinmo/ts-tools",
+  "files": ["dist"],
   "scripts": {
     "build": "tsc",
     "test": "mocha",
