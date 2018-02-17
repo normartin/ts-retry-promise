@@ -1,6 +1,6 @@
 {
   "name": "ts-retry-promise",
-  "version": "0.0.4-PRE3",
+  "version": "0.0.5-PRERELEASE",
   "license": "MIT",
   "repository": "https://bitbucket.org/martinmo/ts-tools",
   "keywords": [
@@ -15,12 +15,12 @@
     "doc": "./dist"
   },
   "scripts": {
-    "cleanup": "del-cli dist node_modules coverage",
+    "cleanup": "del-cli dist coverage",
     "prebuild": "yarn cleanup",
     "build": "tsc && cpx ../LICENSE.txt ./dist && cpx ../README.md ./dist && cpx package.json ./dist",
     "test": "mocha",
     "test:coverage": "nyc mocha",
-    "prepublish": "yarn build"
+    "do-publish": "yarn build && yarn publish"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",
