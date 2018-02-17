@@ -4,7 +4,7 @@ import {expect} from "chai";
 
 describe("Retry Promise", () => {
 
-    it("can be used", async function () {
+    it("should retry", async function () {
 
         const failer = new Failer(1, "Result");
 
@@ -12,6 +12,13 @@ describe("Retry Promise", () => {
 
         expect(result).to.eq("Result");
         expect(failer.calls).to.eq(2);
+    });
+
+    it("should fail if all retries are done", async function () {
+
+        const failer = new Failer(100, "Result");
+
+        await expectError(retry(() => failer.run()));
     });
 
     it("should not alter config", async function () {
@@ -47,4 +54,14 @@ class Failer<T> {
             throw Error("Expected fail. Fails left " + this.fails);
         }
     }
+}
+
+async function expectError<T>(p: Promise<T>): Promise<Error> {
+    let result: any = undefined;
+    try {
+        result = await p;
+    } catch (error) {
+        return error;
+    }
+    throw Error("Expected error, but got " + result);
 }
