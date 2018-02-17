@@ -4,3 +4,4 @@ coverage
 dist
 .nyc_output
 *.iml
+lerna-debug.log

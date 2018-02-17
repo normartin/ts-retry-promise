@@ -1,51 +1,66 @@
 import "mocha";
-import {retry, RetryConfig} from "../src/retry-promise";
+import {notEmpty, retry, RetryConfig} from "../src/retry-promise";
 import {expect} from "chai";
 
 describe("Retry Promise", () => {
 
     it("should retry", async function () {
+        const failer = new Failer(1);
 
-        const failer = new Failer(1, "Result");
-
-        const result = await retry(() => failer.run());
+        const result = await retry(() => failer.run(), {delay: 10});
 
         expect(result).to.eq("Result");
         expect(failer.calls).to.eq(2);
     });
 
     it("should fail if all retries are done", async function () {
+        const failer = new Failer(2);
 
-        const failer = new Failer(100, "Result");
-
-        await expectError(retry(() => failer.run()));
+        await expectError(retry(() => failer.run(), {delay: 10, retries: 1}));
     });
 
     it("should not alter config", async function () {
-        const failer = new Failer(1, "Result");
+        const failer = new Failer(1);
 
         const config: RetryConfig = {
-            retries: 3,
-            delay: 10
+            retries: 3
         };
 
         await retry(() => failer.run(), config);
 
         expect(config.retries).to.eq(3);
-        expect(config.delay).to.eq(10);
+    });
+
+    it("can use until function", async function () {
+        let times = 0;
+        const returnsNoneEmptyArrayAfter2Calls = async () => {
+            times++;
+            if (times == 2) {
+                return ["Result"];
+            } else {
+                return [];
+            }
+        };
+
+        const result = await retry(returnsNoneEmptyArrayAfter2Calls, {
+            until: notEmpty
+        });
+
+        expect(result).length(1);
+        expect(result[0]).to.eq("Result");
     });
 
 });
 
-class Failer<T> {
+class Failer {
 
     public calls: number = 0;
 
-    constructor(private fails: number, private result: T) {
+    constructor(private fails: number, private result: string = "Result") {
 
     }
 
-    public async run(): Promise<T> {
+    public async run(): Promise<String> {
         this.calls++;
         if (this.fails < 1) {
             return this.result;
