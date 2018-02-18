@@ -17,7 +17,7 @@
   "scripts": {
     "cleanup": "del-cli dist coverage",
     "prebuild": "yarn cleanup",
-    "build": "tsc && cpx ../LICENSE.txt ./dist && cpx ../README.md ./dist && cpx package.json ./dist",
+    "build": "tsc",
     "test": "mocha",
     "test:coverage": "nyc mocha",
     "do-publish": "cpx ../README.md ./ && yarn build && yarn publish",

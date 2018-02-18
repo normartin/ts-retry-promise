@@ -4,7 +4,7 @@ import {expect} from "chai";
 
 describe("Retry Promise", () => {
 
-    it("should retry", async function () {
+    it("should retry correct number of times", async function () {
         const failer = new Failer(1);
 
         const result = await retry(() => failer.run(), {delay: 10});
