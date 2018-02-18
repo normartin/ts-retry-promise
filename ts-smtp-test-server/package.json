@@ -1,0 +1,65 @@
+{
+  "name": "ts-smtp-test",
+  "version": "0.0.1-PRERELEASE",
+  "license": "MIT",
+  "repository": "https://bitbucket.org/martinmo/ts-tools",
+  "keywords": [
+    "smtp",
+    "test",
+    "typescript"
+  ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "directories": {
+    "doc": "./dist"
+  },
+  "scripts": {
+    "cleanup": "del-cli dist coverage",
+    "prebuild": "yarn cleanup",
+    "build": "tsc",
+    "test": "mocha",
+    "test:coverage": "nyc mocha",
+    "do-publish": "cpx ../README.md ./ && yarn build && yarn publish",
+    "postdo-publish": "del-cli README.md"
+  },
+  "dependencies": {
+    "mailparser": "^2.2.0",
+    "smtp-server": "^3.4.1",
+    "ts-retry-promise": "^0.0.6-PRERELEASE"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/mailparser": "^2.0.2",
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^9.4.6",
+    "@types/nodemailer": "^4.3.4",
+    "@types/smtp-server": "^3.3.4",
+    "chai": "^4.1.2",
+    "cpx": "^1.5.0",
+    "del-cli": "^1.1.0",
+    "mocha": "^5.0.1",
+    "nodemailer": "^4.4.2",
+    "nyc": "^11.4.1",
+    "ts-node": "^4.1.0",
+    "typescript": "^2.7.2"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  }
+}

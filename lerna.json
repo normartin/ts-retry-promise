@@ -1,7 +1,8 @@
 {
   "lerna": "2.9.0",
   "packages": [
-    "ts-retry-promise"
+    "ts-retry-promise",
+    "ts-smtp-test-server"
   ],
   "version": "0.0.0",
   "npmClient": "yarn"
