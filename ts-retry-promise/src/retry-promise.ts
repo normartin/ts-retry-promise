@@ -1,18 +1,18 @@
-import {isArray} from "util";
+import {isArray, isNullOrUndefined} from 'util';
 
-export interface RetryConfig {
+export interface RetryConfig<T> {
     retries?: number;
     delay?: number;
-    until?: (t: any) => boolean;
+    until?: (t: T) => boolean;
 }
 
-const defaults: RetryConfig = Object.freeze({
+const defaults: RetryConfig<any> = Object.freeze({
     retries: 10,
     delay: 100,
     until: () => true
 });
 
-function clone(c: RetryConfig): RetryConfig {
+function clone<T>(c: RetryConfig<T>): RetryConfig<T> {
     return Object.assign({}, defaults, c);
 }
 
@@ -20,24 +20,25 @@ async function wait(ms: number): Promise<void> {
     return new Promise<void>(resolve => setTimeout(resolve, ms));
 }
 
-export async function retry<T>(f: () => Promise<T>, config: RetryConfig = clone(defaults)): Promise<T> {
+export async function retry<T>(f: () => Promise<T>, config: RetryConfig<T> = defaults): Promise<T> {
     config = clone(config);
-    try {
-        let result = await f();
-        if (!config.until(result)) {
-            throw Error("until condition not met by " + result);
+
+    for (let i = 0; i < config.retries; i++) {
+        try {
+            let result = await f();
+            if (config.until(result)) {
+                return result;
+            }
+            console.error('Until condition not met by ' + result);
+        } catch (error) {
+            console.error('Retry failed: ', error);
         }
-        return result;
-    } catch (error) {
-        if (config.retries) {
-            await wait(config.delay);
-            config = clone(config);
-            config.retries--;
-            return retry(f, config)
-        } else {
-            throw Error("All retries failed. Last error: " + error.message);
-        }
+        await wait(config.delay);
     }
+    throw Error('All retries failed.');
 }
 
-export const notEmpty = (result: any) => isArray(result) && result.length > 0;
+
+export const notEmpty = (result: any) =>
+    (isArray(result) && result.length > 0)
+    || (!isArray(result) && !isNullOrUndefined(result));

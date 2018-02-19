@@ -22,7 +22,7 @@ describe("Retry Promise", () => {
     it("should not alter config", async function () {
         const failer = new Failer(1);
 
-        const config: RetryConfig = {
+        const config: RetryConfig<any> = {
             retries: 3
         };
 

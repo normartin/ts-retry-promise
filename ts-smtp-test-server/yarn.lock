@@ -2331,10 +2331,6 @@ ts-node@^4.1.0:
     v8flags "^3.0.0"
     yn "^2.0.0"
 
-ts-retry-promise@^0.0.6-PRERELEASE:
-  version "0.0.6-PRERELEASE"
-  resolved "https://registry.yarnpkg.com/ts-retry-promise/-/ts-retry-promise-0.0.6-PRERELEASE.tgz#eddc150a044bce931e3a762d259ce8c29ab7cc85"
-
 tsconfig@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/tsconfig/-/tsconfig-7.0.0.tgz#84538875a4dc216e5c4a5432b3a4dec3d54e91b7"
