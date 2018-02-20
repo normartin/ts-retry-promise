@@ -4,24 +4,23 @@ export interface RetryConfig<T> {
     retries?: number;
     delay?: number;
     until?: (t: T) => boolean;
+    logger?: (msg: string) => void;
 }
 
-const defaults: RetryConfig<any> = Object.freeze({
+const defaults: RetryConfig<any> = {
     retries: 10,
     delay: 100,
-    until: () => true
-});
-
-function clone<T>(c: RetryConfig<T>): RetryConfig<T> {
-    return Object.assign({}, defaults, c);
-}
+    until: () => true,
+    logger: () => {
+    }
+};
 
 async function wait(ms: number): Promise<void> {
     return new Promise<void>(resolve => setTimeout(resolve, ms));
 }
 
 export async function retry<T>(f: () => Promise<T>, config: RetryConfig<T> = defaults): Promise<T> {
-    config = clone(config);
+    config = Object.assign({}, defaults, config);
 
     for (let i = 0; i < config.retries; i++) {
         try {
@@ -29,9 +28,9 @@ export async function retry<T>(f: () => Promise<T>, config: RetryConfig<T> = def
             if (config.until(result)) {
                 return result;
             }
-            console.error('Until condition not met by ' + result);
+            config.logger('Until condition not met by ' + result);
         } catch (error) {
-            console.error('Retry failed: ', error);
+            config.logger('Retry failed: ' + error.message);
         }
         await wait(config.delay);
     }
@@ -39,6 +38,9 @@ export async function retry<T>(f: () => Promise<T>, config: RetryConfig<T> = def
 }
 
 
-export const notEmpty = (result: any) =>
-    (isArray(result) && result.length > 0)
-    || (!isArray(result) && !isNullOrUndefined(result));
+export const notEmpty = (result: any) => {
+    if (isArray(result)) {
+        return result.length > 0;
+    }
+    return !isNullOrUndefined(result);
+};
