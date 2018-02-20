@@ -1,13 +1,12 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist"
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "declaration": true,
+    "lib": [
+      "es2015",
+      "es6"
+    ]
+  }
 }

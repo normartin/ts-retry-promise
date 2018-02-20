@@ -1,4 +1,4 @@
-import {isArray, isNullOrUndefined} from 'util';
+import {isArray, isNullOrUndefined} from "util";
 
 export interface RetryConfig<T> {
     retries?: number;
@@ -8,35 +8,33 @@ export interface RetryConfig<T> {
 }
 
 const defaults: RetryConfig<any> = {
-    retries: 10,
     delay: 100,
+    logger: () => undefined,
+    retries: 10,
     until: () => true,
-    logger: () => {
-    }
 };
 
 async function wait(ms: number): Promise<void> {
-    return new Promise<void>(resolve => setTimeout(resolve, ms));
+    return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
 export async function retry<T>(f: () => Promise<T>, config: RetryConfig<T> = defaults): Promise<T> {
     config = Object.assign({}, defaults, config);
 
-    for (let i = 0; i < config.retries; i++) {
+    for (let i = 0; i <= config.retries; i++) {
         try {
-            let result = await f();
+            const result = await f();
             if (config.until(result)) {
                 return result;
             }
-            config.logger('Until condition not met by ' + result);
+            config.logger("Until condition not met by " + result);
         } catch (error) {
-            config.logger('Retry failed: ' + error.message);
+            config.logger("Retry failed: " + error.message);
         }
         await wait(config.delay);
     }
-    throw Error('All retries failed.');
+    throw Error("All retries failed.");
 }
-
 
 export const notEmpty = (result: any) => {
     if (isArray(result)) {

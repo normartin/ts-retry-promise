@@ -20,6 +20,8 @@
     "prebuild": "yarn cleanup",
     "build": "tsc",
     "test": "mocha",
+    "posttest": "yarn tslint",
+    "tslint": "tslint -c tslint.json 'src/**/*.ts' 'test/**/*.ts'",
     "test:coverage": "nyc mocha",
     "do-publish": "cpx ../README.md ./ && yarn build && yarn publish",
     "postdo-publish": "del-cli README.md"
@@ -43,6 +45,8 @@
     "nodemailer": "^4.4.2",
     "nyc": "^11.4.1",
     "ts-node": "^4.1.0",
+    "tslint": "^5.9.1",
+    "tslint-no-unused-expression-chai": "^0.0.3",
     "typescript": "^2.7.2"
   },
   "nyc": {

@@ -8,6 +8,7 @@
     "bootstrap": "lerna bootstrap",
     "test": "lerna run test",
     "build": "lerna run build",
+    "tslint": "lerna run tslint",
     "test:coverage": "lerna run test:coverage",
     "full-build": "yarn bootstrap && yarn build && yarn test:coverage && yarn build"
   },

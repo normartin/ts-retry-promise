@@ -1,10 +1,10 @@
+import {expect} from "chai";
 import "mocha";
 import {notEmpty, retry, RetryConfig} from "../src/retry-promise";
-import {expect} from "chai";
 
 describe("Retry Promise", () => {
 
-    it("should retry correct number of times", async function () {
+    it("should retry correct number of times", async () => {
         const failer = new Failer(1);
 
         const result = await retry(() => failer.run(), {delay: 10});
@@ -13,17 +13,19 @@ describe("Retry Promise", () => {
         expect(failer.calls).to.eq(2);
     });
 
-    it("should fail if all retries are done", async function () {
+    it("should fail if all retries are done", async () => {
         const failer = new Failer(2);
 
         await expectError(retry(() => failer.run(), {delay: 10, retries: 1}));
+
+        expect(failer.calls).to.eq(2);
     });
 
-    it("should not alter config", async function () {
+    it("should not alter config", async () => {
         const failer = new Failer(1);
 
         const config: RetryConfig<any> = {
-            retries: 3
+            retries: 3,
         };
 
         await retry(() => failer.run(), config);
@@ -31,11 +33,11 @@ describe("Retry Promise", () => {
         expect(config.retries).to.eq(3);
     });
 
-    it("can use until function", async function () {
+    it("can use until function", async () => {
         let times = 0;
         const returnsNoneEmptyArrayAfter2Calls = async () => {
             times++;
-            if (times == 2) {
+            if (times === 2) {
                 return ["Result"];
             } else {
                 return [];
@@ -43,7 +45,7 @@ describe("Retry Promise", () => {
         };
 
         const result = await retry(returnsNoneEmptyArrayAfter2Calls, {
-            until: notEmpty
+            until: notEmpty,
         });
 
         expect(result).length(1);
@@ -60,7 +62,7 @@ class Failer {
 
     }
 
-    public async run(): Promise<String> {
+    public async run(): Promise<string> {
         this.calls++;
         if (this.fails < 1) {
             return this.result;
@@ -72,7 +74,7 @@ class Failer {
 }
 
 async function expectError<T>(p: Promise<T>): Promise<Error> {
-    let result: any = undefined;
+    let result: any;
     try {
         result = await p;
     } catch (error) {

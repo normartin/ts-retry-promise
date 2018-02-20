@@ -1,9 +1,9 @@
-import "mocha";
-import {SmtpServerConfig, SmtpTestServer} from "../src/smtp-test-server";
-import {createTransport} from "nodemailer";
 import {expect} from "chai";
+import "mocha";
+import {createTransport} from "nodemailer";
+import * as Mail from "nodemailer/lib/mailer";
 import * as SMTPConnection from "nodemailer/lib/smtp-connection";
-import Mail = require("nodemailer/lib/mailer");
+import {SmtpServerConfig, SmtpTestServer} from "../src/smtp-test-server";
 
 describe("SMTP Test server", () => {
 
@@ -23,58 +23,58 @@ describe("SMTP Test server", () => {
             await server.shutdown();
         });
 
-        it("can receive mail", async function () {
+        it("can receive mail", async () => {
             await sendMail(server.config, {
-                from: 'me@me.de',
-                to: 'to@me.de',
-                text: 'some text',
-                html: 'some html',
-                attachments: [{content: 'text attachment'}]
+                attachments: [{content: "text attachment"}],
+                from: "me@me.de",
+                html: "some html",
+                text: "some text",
+                to: "to@me.de",
             });
 
             expect(server.messages).length(1);
 
             const mail = server.messages[0];
-            expect(mail.from.text).to.eq('me@me.de');
-            expect(mail.to.text).to.eq('to@me.de');
-            expect(mail.text).to.eq('some text');
-            expect(mail.html).to.eq('some html');
+            expect(mail.from.text).to.eq("me@me.de");
+            expect(mail.to.text).to.eq("to@me.de");
+            expect(mail.text).to.eq("some text");
+            expect(mail.html).to.eq("some html");
             expect(mail.attachments).length(1);
         });
 
-        it("can wait for mails", async function () {
+        it("can wait for mails", async () => {
             setTimeout(() =>
                 sendMail(server.config, {
-                        to: 'to@me.de',
-                        text: '1'
-                    }
+                        text: "1",
+                        to: "to@me.de",
+                    },
                 ), 50);
 
             setTimeout(() =>
                 sendMail(server.config, {
-                        to: 'to@me.de',
-                        text: '2'
-                    }
+                        text: "2",
+                        to: "to@me.de",
+                    },
                 ), 100);
 
             const messages = await server.waitForMessages(2);
 
             expect(messages).length(2);
-            expect(messages[0].text).to.contain('1');
-            expect(messages[1].text).to.contain('2');
+            expect(messages[0].text).to.contain("1");
+            expect(messages[1].text).to.contain("2");
         });
 
     });
 
-    it('can configure authentication', async function () {
+    it("can configure authentication", async () => {
         const server = await new SmtpTestServer(
-            {port: 2026, authentication: (user, pass) => user === 'the only one'}
+            {port: 2026, authentication: (user, pass) => user === "the only one"},
         ).start();
 
         try {
             await expectError(sendMail(server.config, {}));
 
-            await sendMail(server.config, {}, {user: 'the only one', pass: 'pass'});
+            await sendMail(server.config, {}, {user: "the only one", pass: "pass"});
             expect(server.messages).length(1);
 
         } finally {
@@ -86,23 +86,23 @@ describe("SMTP Test server", () => {
 
 async function sendMail(config: SmtpServerConfig,
                         mailOptions: Mail.Options,
-                        creds: SMTPConnection.Credentials = {user: 'user', pass: 'pass'}) {
+                        creds: SMTPConnection.Credentials = {user: "user", pass: "pass"}) {
 
-    let transporter = createTransport({
+    const transporter = createTransport({
+        auth: creds,
         host: config.host,
         port: config.port,
         secure: config.secure, // true for 465, false for other ports
-        auth: creds,
         tls: {
-            rejectUnauthorized: false
-        }
+            rejectUnauthorized: false,
+        },
     });
 
-    let defaultOptions: Mail.Options = {
+    const defaultOptions: Mail.Options = {
         from: '"Fred Foo 👻" <foo@example.com>',
-        to: 'bar@example.com, baz@example.com',
-        subject: 'Hello ✔',
-        text: 'Hello world?'
+        subject: "Hello ✔",
+        text: "Hello world?",
+        to: "bar@example.com, baz@example.com",
     };
 
     // send mail with defined transport object
@@ -110,7 +110,7 @@ async function sendMail(config: SmtpServerConfig,
 }
 
 async function expectError<T>(p: Promise<T>): Promise<Error> {
-    let result: any = undefined;
+    let result: any;
     try {
         result = await p;
     } catch (error) {

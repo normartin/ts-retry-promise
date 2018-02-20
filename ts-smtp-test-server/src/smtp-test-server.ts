@@ -1,6 +1,6 @@
+import {ParsedMail, simpleParser} from "mailparser";
 import {SMTPServer, SMTPServerAuthentication, SMTPServerAuthenticationResponse, SMTPServerSession} from "smtp-server";
 import {Readable} from "stream";
-import {ParsedMail, simpleParser} from "mailparser";
 import {retry} from "ts-retry-promise/dist/retry-promise";
 
 export interface SmtpServerConfig {
@@ -11,10 +11,10 @@ export interface SmtpServerConfig {
 }
 
 const defaultOptions: SmtpServerConfig = {
+    authentication: () => true,
+    host: "localhost",
     port: 2025,
     secure: false,
-    authentication: () => true,
-    host: 'localhost'
 };
 
 function clone(c: SmtpServerConfig): SmtpServerConfig {
@@ -24,17 +24,16 @@ function clone(c: SmtpServerConfig): SmtpServerConfig {
 export class SmtpTestServer {
 
     public config: SmtpServerConfig;
-    private server: SMTPServer;
     public messages: ParsedMail[] = [];
-
+    private server: SMTPServer;
 
     constructor(serverConfig: SmtpServerConfig = clone(defaultOptions)) {
         this.config = clone(serverConfig);
 
         this.server = new SMTPServer({
-            secure: this.config.secure,
             onAuth: authFunction(this.config),
-            onData: dataFunction(mail => this.messages.push(mail))
+            onData: dataFunction((mail) => this.messages.push(mail)),
+            secure: this.config.secure,
         });
     }
 
@@ -49,14 +48,14 @@ export class SmtpTestServer {
     }
 
     public shutdown(): Promise<void> {
-        return new Promise<void>(resolve => {
+        return new Promise<void>((resolve) => {
             this.server.close(() => resolve());
-        })
+        });
     }
 
     public async waitForMessages(numberOfMessages: number): Promise<ParsedMail[]> {
         return retry(async () => this.messages, {
-            until: messages => messages.length === numberOfMessages
+            until: (messages) => messages.length === numberOfMessages,
         });
     }
 }
@@ -69,7 +68,7 @@ function authFunction(config: SmtpServerConfig): (auth: SMTPServerAuthentication
         if (config.authentication(auth.username, auth.password)) {
             callback(undefined, {user: auth.username});
         } else {
-            callback(new Error('Invalid username or password'), undefined);
+            callback(new Error("Invalid username or password"), undefined);
         }
     });
 }
@@ -82,7 +81,7 @@ function dataFunction(messageCB: (mail: ParsedMail) => void): (stream: Readable,
         simpleParser(stream, (err, mail) => {
             messageCB(mail);
             callback(err);
-        })
+        });
 
-    }
+    };
 }
