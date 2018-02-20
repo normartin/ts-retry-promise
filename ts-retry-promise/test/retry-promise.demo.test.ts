@@ -39,6 +39,7 @@ describe("Retry Promise Demo", () => {
             // your code
         }, {
             delay: 100, // default
+            logger: (message) => undefined, // default
             retries: 10, // default
             until: () => true, // default
         });

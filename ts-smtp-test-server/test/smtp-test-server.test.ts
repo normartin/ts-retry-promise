@@ -7,7 +7,7 @@ import {SmtpServerConfig, SmtpTestServer} from "../src/smtp-test-server";
 
 describe("SMTP Test server", () => {
 
-    describe("with runnning server", () => {
+    describe("with running server", () => {
 
         const server = new SmtpTestServer();
 
@@ -92,7 +92,7 @@ async function sendMail(config: SmtpServerConfig,
         auth: creds,
         host: config.host,
         port: config.port,
-        secure: config.secure, // true for 465, false for other ports
+        secure: config.secure,
         tls: {
             rejectUnauthorized: false,
         },
@@ -105,7 +105,6 @@ async function sendMail(config: SmtpServerConfig,
         to: "bar@example.com, baz@example.com",
     };
 
-    // send mail with defined transport object
     await transporter.sendMail(Object.assign({}, defaultOptions, mailOptions));
 }
 

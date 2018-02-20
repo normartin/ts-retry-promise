@@ -61,6 +61,8 @@ describe("Retry Promise Demo", () => {
 
 Test your email sending code in an integration test.
 
+Uses https://nodemailer.com/ as SMTP-Server.
+
 ```typescript
 describe("with runnning server", () => {
 
