@@ -1,6 +1,6 @@
 {
   "name": "ts-smtp-test",
-  "version": "0.0.1-PRERELEASE",
+  "version": "0.0.1",
   "license": "MIT",
   "repository": "https://bitbucket.org/martinmo/ts-tools",
   "keywords": [
