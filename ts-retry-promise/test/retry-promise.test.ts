@@ -52,6 +52,11 @@ describe("Retry Promise", () => {
         expect(result[0]).to.eq("Result");
     });
 
+    it("notEmpty can handle undefined and null", async () => {
+        expect(notEmpty(null)).to.be.false;
+        expect(notEmpty(undefined)).to.be.false;
+    });
+
 });
 
 class Failer {
