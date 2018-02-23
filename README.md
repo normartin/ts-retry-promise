@@ -8,6 +8,6 @@ Source: https://bitbucket.org/martinmo/ts-tools/src
 
 https://www.npmjs.com/package/ts-retry-promise
 
-## ts-smtp-test-server ##
+## ts-smtp-test ##
 
-Not yet released
+https://www.npmjs.com/package/ts-smtp-test
