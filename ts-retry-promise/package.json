@@ -23,8 +23,7 @@
     "posttest": "yarn tslint",
     "tslint": "tslint -c tslint.json 'src/**/*.ts' 'test/**/*.ts'",
     "test:coverage": "nyc mocha",
-    "do-publish": "cpx ../README.md ./ && yarn build && yarn publish",
-    "postdo-publish": "del-cli README.md"
+    "do-publish": "yarn build && yarn publish"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",

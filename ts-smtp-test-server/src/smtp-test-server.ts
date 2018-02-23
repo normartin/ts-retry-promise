@@ -55,7 +55,7 @@ export class SmtpTestServer {
 
     public async waitForMessages(numberOfMessages: number): Promise<ParsedMail[]> {
         return retry(async () => this.messages, {
-            until: (messages) => messages.length === numberOfMessages,
+            until: (messages: ParsedMail[]) => messages.length === numberOfMessages,
         });
     }
 }
