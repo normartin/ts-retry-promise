@@ -8,6 +8,12 @@ image: node:8.9
 pipelines:
   default:
     - step:
+        caches:
+          - yarncustom
         script: 
           - yarn install
           - yarn full-build
+
+definitions:
+  caches:
+    yarncustom: /usr/local/share/.cache/yarn/v1
