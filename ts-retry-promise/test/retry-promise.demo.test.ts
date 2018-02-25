@@ -1,6 +1,7 @@
 import {expect} from "chai";
 import "mocha";
-import {retry} from "../src/retry-promise";
+import {retry, wait} from "../src/retry-promise";
+import {expectError} from "./retry-promise.test";
 
 describe("Retry Promise Demo", () => {
 
@@ -25,6 +26,20 @@ describe("Retry Promise Demo", () => {
         expect(pageTitle).to.eq("Loaded");
     });
 
+    it("can be configured and has defaults", async () => {
+
+        await retry(async () => {
+            // your code
+        }, {
+            delay: 100, // wait time between retries
+            logger: (message) => undefined, // log events
+            retries: 10, // number of retry attempts
+            timeout: 60 * 1000, // overall timeout
+            until: () => true, // check the result
+        });
+
+    });
+
     it("will retry until condition is met or limit reached", async () => {
 
         await retry(
@@ -33,18 +48,17 @@ describe("Retry Promise Demo", () => {
 
     });
 
-    it("can be configured and has defaults", async () => {
+    it("can have a timeout", async () => {
 
-        await retry(async () => {
-            // your code
-        }, {
-            delay: 100, // default
-            logger: (message) => undefined, // default
-            retries: 10, // default
-            until: () => true, // default
-        });
+        const promise = retry(
+            () => wait(100),
+            {timeout: 10},
+        );
 
+        const error = await expectError(promise);
+        expect(error.message).to.contain("Timeout");
     });
+
 });
 
 const browser = {

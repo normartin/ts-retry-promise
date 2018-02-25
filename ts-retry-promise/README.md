@@ -11,6 +11,7 @@ Repeats the call to a function that returns a promise until a resolved promise i
 
 ```typescript
 // ts-retry-promise/test/retry-promise.demo.test.ts
+
 it("will retry until no exception or limit reached", async () => {
 
     await retry(async () => {
@@ -32,6 +33,20 @@ it("can return a result", async () => {
     expect(pageTitle).to.eq("Loaded");
 });
 
+it("can be configured and has defaults", async () => {
+
+    await retry(async () => {
+        // your code
+    }, {
+        delay: 100, // wait time between retries
+        logger: (message) => undefined, // log events
+        retries: 10, // number of retry attempts
+        timeout: 60 * 1000, // overall timeout
+        until: () => true, // check the result
+    });
+
+});
+
 it("will retry until condition is met or limit reached", async () => {
 
     await retry(
@@ -40,17 +55,15 @@ it("will retry until condition is met or limit reached", async () => {
 
 });
 
-it("can be configured and has defaults", async () => {
+it("can have a timeout", async () => {
 
-    await retry(async () => {
-        // your code
-    }, {
-        delay: 100, // default
-        logger: (message) => undefined, // default
-        retries: 10, // default
-        until: () => true, // default
-    });
+    const promise = retry(
+        () => wait(100),
+        {timeout: 10},
+    );
 
+    const error = await expectError(promise);
+    expect(error.message).to.contain("Timeout");
 });
 ```
 

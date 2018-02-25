@@ -26,6 +26,7 @@ export async function retry<T>(f: () => Promise<T>, config: RetryConfig<T> = def
 }
 
 async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T> = defaults): Promise<T> {
+    let latestError: Error;
     for (let i = 0; i <= config.retries; i++) {
         try {
             const result = await f();
@@ -34,11 +35,12 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T> = defaults)
             }
             config.logger("Until condition not met by " + result);
         } catch (error) {
+            latestError = error;
             config.logger("Retry failed: " + error.message);
         }
         await wait(config.delay);
     }
-    throw Error("All retries failed.");
+    throw Error(`All retries failed. Last error: ${latestError ? latestError.message : ""}`);
 }
 
 export const notEmpty = (result: any) => {

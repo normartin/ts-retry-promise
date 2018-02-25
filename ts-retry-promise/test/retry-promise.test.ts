@@ -62,6 +62,14 @@ describe("Retry Promise", () => {
 
         expect(error.message).to.contain("Timeout");
     });
+
+    it("error message should caontain message of last error", async () => {
+        const failer = new Failer(2);
+
+        const error = await expectError(retry(() => failer.run(), {delay: 1, retries: 1}));
+
+        expect(error.message).to.contain("Expected fail.");
+    });
 });
 
 class Failer {
@@ -83,7 +91,7 @@ class Failer {
     }
 }
 
-async function expectError<T>(p: Promise<T>): Promise<Error> {
+export async function expectError<T>(p: Promise<T>): Promise<Error> {
     let result: any;
     try {
         result = await p;
