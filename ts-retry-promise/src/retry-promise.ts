@@ -5,22 +5,27 @@ export interface RetryConfig<T> {
     delay?: number;
     until?: (t: T) => boolean;
     logger?: (msg: string) => void;
+    timeout?: number;
 }
 
 const defaults: RetryConfig<any> = {
     delay: 100,
     logger: () => undefined,
     retries: 10,
+    timeout: 60 * 1000,
     until: () => true,
 };
 
-async function wait(ms: number): Promise<void> {
+export async function wait(ms: number): Promise<void> {
     return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
 export async function retry<T>(f: () => Promise<T>, config: RetryConfig<T> = defaults): Promise<T> {
     config = Object.assign({}, defaults, config);
+    return timeout(_retry(f, config), config.timeout);
+}
 
+async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T> = defaults): Promise<T> {
     for (let i = 0; i <= config.retries; i++) {
         try {
             const result = await f();
@@ -42,3 +47,19 @@ export const notEmpty = (result: any) => {
     }
     return !isNullOrUndefined(result);
 };
+
+function timeout<T>(p: Promise<T>, time: number): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error("Timeout after " + time)), time);
+
+        return p
+            .then((result) => {
+                clearTimeout(timer);
+                resolve(result);
+            })
+            .catch((error) => {
+                clearTimeout(timer);
+                reject(error);
+            });
+    });
+}

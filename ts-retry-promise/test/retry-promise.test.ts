@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import "mocha";
-import {notEmpty, retry, RetryConfig} from "../src/retry-promise";
+import {notEmpty, retry, RetryConfig, wait} from "../src/retry-promise";
 
 describe("Retry Promise", () => {
 
@@ -57,6 +57,11 @@ describe("Retry Promise", () => {
         expect(notEmpty(undefined)).to.be.false;
     });
 
+    it("should throw on timeout", async () => {
+        const error = await expectError(retry(() => wait(100), {timeout: 10}));
+
+        expect(error.message).to.contain("Timeout");
+    });
 });
 
 class Failer {
