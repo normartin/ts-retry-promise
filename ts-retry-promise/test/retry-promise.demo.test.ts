@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import "mocha";
-import {customizeRetry, retry, wait} from "../src/retry-promise";
+import {customizeRetry, defaultRetryConfig, retry, wait} from "../src/retry-promise";
 import {expectError} from "./retry-promise.test";
 
 describe("Retry Promise Demo", () => {
@@ -59,12 +59,25 @@ describe("Retry Promise Demo", () => {
         expect(error.message).to.contain("Timeout");
     });
 
-    it("can can be customized", async () => {
-        const shortRetry = customizeRetry({timeout: 5});
+    it("can create a customized retry", async () => {
+        const impatientRetry = customizeRetry({timeout: 5});
 
-        const error = await expectError(shortRetry(async () => wait(10)));
+        const error = await expectError(impatientRetry(async () => wait(10)));
 
         expect(error.message).to.contain("Timeout");
+    });
+
+    it("can customize default config", async () => {
+        const originalTimeout = defaultRetryConfig.timeout;
+        try {
+            defaultRetryConfig.timeout = 1;
+
+            const error = await expectError(retry(async () => wait(10)));
+
+            expect(error.message).to.contain("Timeout");
+        } finally {
+            defaultRetryConfig.timeout = originalTimeout;
+        }
     });
 
 });

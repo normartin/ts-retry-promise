@@ -8,7 +8,7 @@ export interface RetryConfig<T> {
     timeout?: number;
 }
 
-const defaults: RetryConfig<any> = {
+export const defaultRetryConfig: RetryConfig<any> = {
     delay: 100,
     logger: () => undefined,
     retries: 10,
@@ -21,7 +21,7 @@ export async function wait(ms: number): Promise<void> {
 }
 
 export async function retry<T>(f: () => Promise<T>, config?: RetryConfig<T>): Promise<T> {
-    config = Object.assign({}, defaults, config);
+    config = Object.assign({}, defaultRetryConfig, config);
     return timeout(_retry(f, config), config.timeout);
 }
 
