@@ -48,20 +48,24 @@ describe("SMTP Test server", () => {
                         text: "1",
                         to: "to@me.de",
                     },
-                ), 50);
+                ).catch(console.error), 5);
 
             setTimeout(() =>
                 sendMail(server.config, {
                         text: "2",
                         to: "to@me.de",
                     },
-                ), 100);
+                ).catch(console.error), 10);
 
             const messages = await server.waitForMessages(2);
 
             expect(messages).length(2);
             expect(messages[0].text).to.contain("1");
             expect(messages[1].text).to.contain("2");
+        });
+
+        it("can wait for mails with timeout", async () => {
+            await expectError(server.waitForMessages(1, 1));
         });
 
     });
