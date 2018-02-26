@@ -20,9 +20,17 @@ export async function wait(ms: number): Promise<void> {
     return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
-export async function retry<T>(f: () => Promise<T>, config: RetryConfig<T> = defaults): Promise<T> {
+export async function retry<T>(f: () => Promise<T>, config?: RetryConfig<T>): Promise<T> {
     config = Object.assign({}, defaults, config);
     return timeout(_retry(f, config), config.timeout);
+}
+
+// tslint:disable-next-line
+export function customizeRetry<T>(customConfig: RetryConfig<T>): <T>(f: () => Promise<T>, config?: RetryConfig<T>) => Promise<T> {
+    return (f, c) => {
+        const customized = Object.assign({}, customConfig, c);
+        return retry(f, customized);
+    };
 }
 
 async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>): Promise<T> {
