@@ -22,7 +22,8 @@ export async function wait(ms: number): Promise<void> {
 
 export async function retry<T>(f: () => Promise<T>, config?: RetryConfig<T>): Promise<T> {
     config = Object.assign({}, defaultRetryConfig, config);
-    return timeout(_retry(f, config), config.timeout);
+    const cancel = exposedPromise();
+    return timeout(_retry(f, config, cancel.promise), config.timeout, cancel.resolve);
 }
 
 // tslint:disable-next-line
@@ -33,9 +34,11 @@ export function customizeRetry<T>(customConfig: RetryConfig<T>): <T>(f: () => Pr
     };
 }
 
-async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>): Promise<T> {
+async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, canceled: Promise<void>): Promise<T> {
     let latestError: Error;
-    for (let i = 0; i <= config.retries; i++) {
+    let stop = false;
+    canceled.then(() => stop = true);
+    for (let i = 0; i <= config.retries && !stop; i++) {
         try {
             const result = await f();
             if (config.until(result)) {
@@ -58,9 +61,12 @@ export const notEmpty = (result: any) => {
     return !isNullOrUndefined(result);
 };
 
-function timeout<T>(p: Promise<T>, time: number): Promise<T> {
+function timeout<T>(p: Promise<T>, time: number, onTimeout: () => void): Promise<T> {
     return new Promise<T>((resolve, reject) => {
-        const timer = setTimeout(() => reject(new Error("Timeout after " + time)), time);
+        const timer = setTimeout(() => {
+            reject(new Error("Timeout after " + time));
+            onTimeout();
+        }, time);
 
         return p
             .then((result) => {
@@ -72,4 +78,17 @@ function timeout<T>(p: Promise<T>, time: number): Promise<T> {
                 reject(error);
             });
     });
+}
+
+function exposedPromise(): { promise: Promise<void>, resolve: () => void, reject: () => void } {
+    const result: { promise: Promise<void>, resolve: () => void, reject: () => void } = {
+        promise: undefined,
+        reject: undefined,
+        resolve: undefined,
+    };
+    result.promise = new Promise<void>(((resolve, reject) => {
+        result.resolve = resolve;
+        result.reject = reject;
+    }));
+    return result;
 }

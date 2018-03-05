@@ -91,6 +91,20 @@ describe("Retry Promise", () => {
             defaultRetryConfig.timeout = originalTimeout;
         }
     });
+
+    it("should stop retry after timeout", async () => {
+        let calls = 0;
+        const error = await expectError(retry(async () => {
+            calls += 1;
+            await wait(5);
+            throw Error();
+        }, {timeout: 2, delay: 1}));
+
+        expect(error.message).to.contain("Timeout");
+
+        await wait(20);
+        expect(calls).to.eq(1);
+    });
 });
 
 class Failer {
