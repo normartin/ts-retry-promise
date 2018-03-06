@@ -18,12 +18,11 @@
     "build": "tsc",
     "test": "mocha",
     "posttest": "yarn tslint",
-    "tslint": "tslint -c tslint.json 'src/**/*.ts' 'test/**/*.ts'",
+    "tslint": "tslint 'src/**/*.ts' 'test/**/*.ts'",
     "test:coverage": "nyc mocha",
-    "validate": "yarn tslint && yarn test:coverage && yarn build",
-    "prerelease": "yarn config set version-tag-prefix smtp-test-server-",
-    "release": "yarn validate && yarn publish",
-    "postrelease": "yarn config delete version-tag-prefix"
+    "validate": "yarn tslint && yarn test:coverage",
+    "prerelease": "yarn validate",
+    "release": " yarn build && yarn publish"
   },
   "dependencies": {
     "mailparser": "^2.2.0",

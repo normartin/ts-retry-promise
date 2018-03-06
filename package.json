@@ -6,11 +6,9 @@
   "scripts": {
     "cleanup": "lerna exec -- del-cli dist node_modules coverage",
     "bootstrap": "lerna bootstrap",
-    "test": "lerna run test",
+    "validate": "lerna run validate",
     "build": "lerna run build",
-    "tslint": "lerna run tslint",
-    "test:coverage": "lerna run test:coverage",
-    "full-build": "yarn bootstrap && yarn build && yarn test:coverage && yarn build"
+    "full-build": "yarn bootstrap && yarn build && yarn validate && yarn build"
   },
   "devDependencies": {
     "del-cli": "^1.1.0",

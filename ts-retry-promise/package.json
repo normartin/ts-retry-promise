@@ -12,18 +12,17 @@
     "dist",
     "README.md"
   ],
-  "directories": {
-    "doc": "./dist"
-  },
   "scripts": {
     "cleanup": "del-cli dist coverage",
     "prebuild": "yarn cleanup",
     "build": "tsc",
     "test": "mocha",
     "posttest": "yarn tslint",
-    "tslint": "tslint -c tslint.json 'src/**/*.ts' 'test/**/*.ts'",
+    "tslint": "tslint 'src/**/*.ts' 'test/**/*.ts'",
     "test:coverage": "nyc mocha",
-    "do-publish": "yarn build && yarn publish"
+    "validate": "yarn tslint && yarn test:coverage",
+    "prerelease": "yarn validate",
+    "release": "yarn build && yarn publish"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",
