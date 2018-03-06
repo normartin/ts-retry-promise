@@ -12,9 +12,6 @@
     "dist",
     "README.md"
   ],
-  "directories": {
-    "doc": "./dist"
-  },
   "scripts": {
     "cleanup": "del-cli dist coverage",
     "prebuild": "yarn cleanup",
@@ -23,8 +20,10 @@
     "posttest": "yarn tslint",
     "tslint": "tslint -c tslint.json 'src/**/*.ts' 'test/**/*.ts'",
     "test:coverage": "nyc mocha",
-    "prepublish": "yarn tslint && yarn test:coverage",
-    "do-publish": "yarn config set version-tag-prefix smtp-test-server- && yarn build && yarn publish && yarn config delete version-tag-prefix"
+    "validate": "yarn tslint && yarn test:coverage && yarn build",
+    "prerelease": "yarn config set version-tag-prefix smtp-test-server-",
+    "release": "yarn validate && yarn publish",
+    "postrelease": "yarn config delete version-tag-prefix"
   },
   "dependencies": {
     "mailparser": "^2.2.0",
