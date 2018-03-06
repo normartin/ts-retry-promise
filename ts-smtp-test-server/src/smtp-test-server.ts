@@ -2,6 +2,7 @@ import {ParsedMail, simpleParser} from "mailparser";
 import {SMTPServer, SMTPServerAuthentication, SMTPServerAuthenticationResponse, SMTPServerSession} from "smtp-server";
 import {Readable} from "stream";
 import {defaultRetryConfig, retry} from "ts-retry-promise/dist/retry-promise";
+import {Mail} from "./mail";
 
 export interface SmtpServerConfig {
     port?: number;
@@ -20,7 +21,7 @@ const defaultOptions: SmtpServerConfig = {
 export class SmtpTestServer {
 
     public config: SmtpServerConfig;
-    public messages: ParsedMail[] = [];
+    public messages: Mail[] = [];
     private server: SMTPServer;
 
     constructor(serverConfig?: SmtpServerConfig) {
@@ -28,7 +29,7 @@ export class SmtpTestServer {
 
         this.server = new SMTPServer({
             onAuth: authFunction(this.config),
-            onData: dataFunction((mail) => this.messages.push(mail)),
+            onData: dataFunction((mail) => this.messages.push(new Mail(mail))),
             secure: this.config.secure,
         });
     }
@@ -49,10 +50,10 @@ export class SmtpTestServer {
         });
     }
 
-    public async waitForMessages(numberOfMessages: number, timeout?: number): Promise<ParsedMail[]> {
+    public async waitForMessages(numberOfMessages: number, timeout?: number): Promise<Mail[]> {
         return retry(async () => this.messages, {
             timeout: timeout ? timeout : defaultRetryConfig.timeout,
-            until: (messages: ParsedMail[]) => messages.length === numberOfMessages,
+            until: (messages: Mail[]) => messages.length === numberOfMessages,
         });
     }
 }

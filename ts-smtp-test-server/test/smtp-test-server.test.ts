@@ -28,6 +28,7 @@ describe("SMTP Test server", () => {
                 attachments: [{content: "text attachment"}],
                 from: "me@me.de",
                 html: "some html",
+                subject: "hi",
                 text: "some text",
                 to: "to@me.de",
             });
@@ -35,10 +36,11 @@ describe("SMTP Test server", () => {
             expect(server.messages).length(1);
 
             const mail = server.messages[0];
-            expect(mail.from.text).to.eq("me@me.de");
-            expect(mail.to.text).to.eq("to@me.de");
-            expect(mail.text).to.eq("some text");
-            expect(mail.html).to.eq("some html");
+            expect(mail.from).to.eq("me@me.de");
+            expect(mail.to).to.eq("to@me.de");
+            expect(mail.subject).to.eq("hi");
+            expect(mail.textContent).to.eq("some text");
+            expect(mail.htmlContent).to.eq("some html");
             expect(mail.attachments).length(1);
         });
 
@@ -60,12 +62,26 @@ describe("SMTP Test server", () => {
             const messages = await server.waitForMessages(2);
 
             expect(messages).length(2);
-            expect(messages[0].text).to.contain("1");
-            expect(messages[1].text).to.contain("2");
+            expect(messages[0].textContent).to.contain("1");
+            expect(messages[1].textContent).to.contain("2");
         });
 
         it("can wait for mails with timeout", async () => {
             await expectError(server.waitForMessages(1, 1));
+        });
+
+        it("can have no html content", async () => {
+            await sendMail(server.config, {
+                from: "me@me.de",
+                subject: "hi",
+                text: "some text",
+                to: "to@me.de",
+            });
+
+            expect(server.messages).length(1);
+
+            const mail = server.messages[0];
+            expect(mail.htmlContent).to.be.undefined;
         });
 
     });

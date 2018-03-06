@@ -23,6 +23,7 @@
     "posttest": "yarn tslint",
     "tslint": "tslint -c tslint.json 'src/**/*.ts' 'test/**/*.ts'",
     "test:coverage": "nyc mocha",
+    "prepublish": "yarn tslint && yarn test:coverage",
     "do-publish": "yarn config set version-tag-prefix smtp-test-server- && yarn build && yarn publish && yarn config delete version-tag-prefix"
   },
   "dependencies": {
