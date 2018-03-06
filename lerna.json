@@ -4,6 +4,6 @@
     "ts-retry-promise",
     "ts-smtp-test-server"
   ],
-  "version": "0.0.0",
+  "version": "independent",
   "npmClient": "yarn"
 }

@@ -8,7 +8,10 @@
     "bootstrap": "lerna bootstrap",
     "validate": "lerna run validate",
     "build": "lerna run build",
-    "full-build": "yarn bootstrap && yarn build && yarn validate && yarn build"
+    "full-build": "yarn bootstrap && yarn build && yarn validate && yarn build",
+    "updated": "lerna updated",
+    "pretest-release": "yarn full-build",
+    "test-release": "lerna publish --cd-version prepatch --npm-tag=next"
   },
   "devDependencies": {
     "del-cli": "^1.1.0",
