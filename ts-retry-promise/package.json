@@ -1,6 +1,6 @@
 {
   "name": "ts-retry-promise",
-  "version": "0.0.8",
+  "version": "0.0.9-0",
   "license": "MIT",
   "repository": "https://bitbucket.org/martinmo/ts-tools",
   "keywords": [
@@ -20,7 +20,7 @@
     "posttest": "yarn tslint",
     "tslint": "tslint 'src/**/*.ts' 'test/**/*.ts'",
     "test:coverage": "nyc mocha",
-    "validate": "yarn cleanup && yarn tslint && yarn test:coverage",
+    "validate": "yarn tslint && yarn test:coverage",
     "prerelease": "yarn validate",
     "release": "yarn build && yarn publish"
   },

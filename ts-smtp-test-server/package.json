@@ -1,6 +1,6 @@
 {
   "name": "ts-smtp-test",
-  "version": "1.0.0",
+  "version": "1.0.1-0",
   "license": "MIT",
   "repository": "https://bitbucket.org/martinmo/ts-tools",
   "keywords": [
@@ -27,7 +27,7 @@
   "dependencies": {
     "mailparser": "^2.2.0",
     "smtp-server": "^3.4.1",
-    "ts-retry-promise": "^0.0.8"
+    "ts-retry-promise": "^0.0.9-0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",
