@@ -3,5 +3,5 @@
 --full-trace
 --bail
 --reporter mocha-junit-reporter
---reporter-options mochaFile=./reports/test-results/file.xml
+--reporter-options mochaFile=./reports/test-results/junit.xml
 test/**/*.test.ts

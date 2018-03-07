@@ -8,9 +8,9 @@
     "bootstrap": "lerna bootstrap",
     "validate": "lerna run validate",
     "build": "lerna run build",
-    "full-build": "yarn bootstrap && yarn build && yarn validate && yarn build",
+    "full-build": "yarn bootstrap && yarn build && yarn validate",
     "updated": "lerna updated",
-    "pretest-release": "yarn full-build",
+    "pretest-release": "yarn full-build && yarn build",
     "test-release": "lerna publish --cd-version prepatch --npm-tag=next"
   },
   "devDependencies": {
