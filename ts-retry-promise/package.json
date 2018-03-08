@@ -34,12 +34,13 @@
     "mocha": "^5.0.1",
     "mocha-junit-reporter": "^1.17.0",
     "nyc": "^11.4.1",
-    "ts-node": "^4.1.0",
+    "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
     "tslint-no-unused-expression-chai": "^0.0.3",
     "typescript": "^2.7.2"
   },
   "nyc": {
+    "all": true,
     "check-coverage": true,
     "per-file": true,
     "lines": 99,
@@ -49,6 +50,9 @@
     "include": [
       "src/**/*.ts"
     ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
     "extension": [
       ".ts"
     ],
@@ -56,7 +60,7 @@
       "ts-node/register"
     ],
     "reporter": [
-      "text-summary",
+      "text",
       "html"
     ],
     "sourceMap": true,

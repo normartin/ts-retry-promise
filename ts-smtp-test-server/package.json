@@ -49,6 +49,7 @@
     "typescript": "^2.7.2"
   },
   "nyc": {
+    "all": true,
     "check-coverage": true,
     "per-file": true,
     "lines": 99,
@@ -58,6 +59,9 @@
     "include": [
       "src/**/*.ts"
     ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
     "extension": [
       ".ts"
     ],
@@ -65,7 +69,7 @@
       "ts-node/register"
     ],
     "reporter": [
-      "text-summary",
+      "text",
       "html"
     ],
     "sourceMap": true,
