@@ -2,6 +2,5 @@
 --require source-map-support/register
 --full-trace
 --bail
---reporter mocha-junit-reporter
---reporter-options mochaFile=./reports/test-results/junit.xml
+--reporter spec
 test/**/*.test.ts

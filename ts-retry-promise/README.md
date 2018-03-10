@@ -1,13 +1,11 @@
-# ts tools #
-
-Some tools I extracted from my daily work.
-
+# ts-retry-promise #
 Source: https://bitbucket.org/martinmo/ts-tools/src
 
-## ts-retry-promise ##
+_retry for functions returning a promise_
 
 I use this heavily in UI tests. 
 Repeats the call to a function that returns a promise until a resolved promise is returned.
+Optionally a predicate on the result can be specified.
 
 ```typescript
 // ts-retry-promise/test/retry-promise.demo.test.ts
