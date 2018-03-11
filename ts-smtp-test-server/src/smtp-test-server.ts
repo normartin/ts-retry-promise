@@ -1,7 +1,7 @@
 import {ParsedMail, simpleParser} from "mailparser";
 import {SMTPServer, SMTPServerAuthentication, SMTPServerAuthenticationResponse, SMTPServerSession} from "smtp-server";
 import {Readable} from "stream";
-import {defaultRetryConfig, retry} from "ts-retry-promise/dist/retry-promise";
+import {defaultRetryConfig, retry} from "ts-retry-promise";
 import {Mail} from "./mail";
 
 export interface SmtpServerConfig {

@@ -15,6 +15,8 @@
     "README.md",
     "LICENSE.txt"
   ],
+  "main": "dist/retry-promise.js",
+  "types": "dist/retry-promise.d.ts",
   "engines": {
     "node": ">=6"
   },

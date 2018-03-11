@@ -2,7 +2,7 @@
   "name": "ts-smtp-test",
   "version": "1.0.1",
   "license": "MIT",
-  "description": "smtp server for itegration testing",
+  "description": "smtp server for integration testing",
   "repository": "https://bitbucket.org/martinmo/ts-tools",
   "bugs": "https://bitbucket.org/martinmo/ts-tools/issues",
   "keywords": [
@@ -15,6 +15,8 @@
     "README.md",
     "LICENSE.txt"
   ],
+  "main": "dist/smtp-test-server.js",
+  "types": "dist/smtp-test-server.d.ts",
   "engines": {
     "node": ">=6"
   },
