@@ -80,15 +80,21 @@ function timeout<T>(p: Promise<T>, time: number, onTimeout: () => void): Promise
     });
 }
 
-function exposedPromise(): { promise: Promise<void>, resolve: () => void, reject: () => void } {
-    const result: { promise: Promise<void>, resolve: () => void, reject: () => void } = {
+interface ExposedPromiseInterface {
+    promise: Promise<void>;
+    resolve: () => void;
+    reject: () => void;
+}
+
+function exposedPromise(): ExposedPromiseInterface {
+    const result: ExposedPromiseInterface = {
         promise: undefined,
         reject: undefined,
         resolve: undefined,
     };
-    result.promise = new Promise<void>(((resolve, reject) => {
+    result.promise = new Promise<void>((resolve, reject) => {
         result.resolve = resolve;
         result.reject = reject;
-    }));
+    });
     return result;
 }

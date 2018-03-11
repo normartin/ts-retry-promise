@@ -127,7 +127,7 @@ class Failer {
 }
 
 export async function expectError<T>(p: Promise<T>): Promise<Error> {
-    let result: any;
+    let result: T;
     try {
         result = await p;
     } catch (error) {
