@@ -1,0 +1,19 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "jsRules": {},
+  "rules": {
+    "interface-name": [
+      true,
+      "never-prefix"
+    ],
+    "max-classes-per-file": false,
+    "no-unused-expression": false,
+    "no-unused-expression-chai": true
+  },
+  "rulesDirectory": [
+    "tslint-no-unused-expression-chai"
+  ]
+}

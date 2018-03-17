@@ -1,0 +1,76 @@
+{
+  "name": "ts-promise-cache",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "a loading cache",
+  "repository": "https://bitbucket.org/martinmo/ts-tools",
+  "bugs": "https://bitbucket.org/martinmo/ts-tools/issues",
+  "keywords": [
+    "promise",
+    "cache",
+    "typescript"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.txt"
+  ],
+  "main": "dist/promise-cache.js",
+  "types": "dist/promise-cache.d.ts",
+  "engines": {
+    "node": ">=8"
+  },
+  "scripts": {
+    "cleanup": "del-cli dist reports .nyc_output",
+    "prebuild": "yarn cleanup",
+    "build": "tsc",
+    "test": "mocha",
+    "posttest": "yarn tslint",
+    "tslint": "tslint 'src/**/*.ts' 'test/**/*.ts'",
+    "test:coverage": "nyc mocha",
+    "validate": "yarn tslint && yarn test:coverage",
+    "prerelease": "yarn validate",
+    "release": "yarn build && yarn publish"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^9.4.6",
+    "chai": "^4.1.2",
+    "del-cli": "^1.1.0",
+    "mocha": "^5.0.1",
+    "nyc": "^11.4.1",
+    "ts-node": "^5.0.1",
+    "tslint": "^5.9.1",
+    "tslint-no-unused-expression-chai": "^0.0.3",
+    "typescript": "^2.7.2"
+  },
+  "nyc": {
+    "all": true,
+    "check-coverage": true,
+    "per-file": true,
+    "lines": 99,
+    "statements": 99,
+    "functions": 99,
+    "branches": 99,
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true,
+    "report-dir": "reports/coverage"
+  }
+}
