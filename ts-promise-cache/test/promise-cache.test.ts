@@ -1,5 +1,6 @@
 import {expect} from "chai";
 import "mocha";
+import {retry} from "ts-retry-promise";
 import {PromiseCache} from "../src/promise-cache";
 
 describe("Promise Cache", () => {
@@ -105,6 +106,12 @@ describe("Promise Cache", () => {
         expect(await cache.get("key")).to.eq("value");
 
         expect(onRejectCalled).to.eq(1);
+    });
+
+    it("can use ts-retry-config", async () => {
+        const loader = failsOneTime("value");
+        const cache = new PromiseCache<string>(() => retry(loader));
+        expect(await cache.get("key")).to.eq("value");
     });
 
 });

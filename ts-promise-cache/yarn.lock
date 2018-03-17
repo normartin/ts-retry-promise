@@ -2113,6 +2113,10 @@ ts-node@^5.0.1:
     source-map-support "^0.5.3"
     yn "^2.0.0"
 
+ts-retry-promise@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/ts-retry-promise/-/ts-retry-promise-0.0.10.tgz#d7d93d300008267fa0ed7c36bc7593de70d63611"
+
 tslib@^1.8.0, tslib@^1.8.1:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
