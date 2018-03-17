@@ -7,7 +7,7 @@ export interface CacheConfig<T> {
     ttl: number | "FOREVER";
     // fallback for rejected promises (default: (error) => Promise.reject(error))
     onReject: (error: Error, key: string, loader: (key: string) => Promise<T>) => Promise<T>;
-    // called before entries is removed for ttl
+    // called before entries are removed because of ttl
     onRemove: (key: string, p: Promise<T>) => void;
     // remove rejected promises? (default: true)
     removeRejected: boolean;
