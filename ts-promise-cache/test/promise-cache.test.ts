@@ -57,6 +57,19 @@ describe("Promise Cache", () => {
         expect(loader.timesLoaded).to.eq(2);
     });
 
+    it("should not remove entry before ttl", async () => {
+        const loader = new TestLoader("value");
+        const cache = new PromiseCache<string>(() => loader.load(), {ttl: 5, checkInterval: 2});
+
+        await cache.get("key");
+
+        await wait(5);
+
+        await cache.get("key");
+
+        expect(loader.timesLoaded).to.eq(1);
+    });
+
     it("should not cleanup if checkInterval is NEVER", async () => {
         const loader = new TestLoader("value");
         const cache = new PromiseCache<string>(() => loader.load(), {ttl: 5, checkInterval: "NEVER"});
@@ -70,13 +83,36 @@ describe("Promise Cache", () => {
         expect(loader.timesLoaded).to.eq(1);
     });
 
-    it("returns rejected promise by default", async () => {
+    it("returns rejected promise", async () => {
         const cache = new PromiseCache<string>(() => Promise.reject(Error("Expected")));
 
         const promise = cache.get("key");
 
         const error = await expectError(promise);
         expect(error.message).to.eq("Expected");
+    });
+
+    it("removes rejected promises by default", async () => {
+        const cache = new PromiseCache<string>(failsOneTime("value"));
+
+        await expectError(cache.get("key"));
+
+        expect(await cache.get("key")).to.eq("value");
+    });
+
+    it("can keep rejected promise", async () => {
+        let calls = 0;
+        const cache = new PromiseCache<string>(() => {
+            calls += 1;
+            return Promise.reject(Error("Expected"));
+        }, {removeRejected: false});
+
+        await expectError(cache.get("key"));
+
+        const error = await expectError(cache.get("key"));
+        expect(error.message).to.eq("Expected");
+
+        expect(calls).to.eq(1);
     });
 
     it("can use failure handler", async () => {
