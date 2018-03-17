@@ -7,6 +7,8 @@ export interface CacheConfig<T> {
     ttl: number | "FOREVER";
     // fallback for rejected promises (default: (error) => Promise.reject(error))
     onReject: (error: Error, key: string, loader: (key: string) => Promise<T>) => Promise<T>;
+    // called before entries is removed for ttl
+    onRemove: (key: string, p: Promise<T>) => void;
     // remove rejected promises? (default: true)
     removeRejected: boolean;
 }
@@ -14,6 +16,7 @@ export interface CacheConfig<T> {
 const defaultConfig: CacheConfig<any> = {
     checkInterval: "NEVER",
     onReject: (error) => Promise.reject(error),
+    onRemove: () => undefined,
     removeRejected: true,
     ttl: -1,
 };
@@ -66,7 +69,11 @@ export class PromiseCache<T> {
         Array.from(this.cache.entries()).forEach((it) => {
             const [key, entry] = it;
             if ((entry.lastAccess + (this.config.ttl as number)) < now) {
-                this.cache.delete(key);
+                try {
+                    this.config.onRemove(key, entry.value);
+                } finally {
+                    this.cache.delete(key);
+                }
             }
         });
     }

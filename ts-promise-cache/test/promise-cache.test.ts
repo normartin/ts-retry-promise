@@ -144,6 +144,28 @@ describe("Promise Cache", () => {
         expect(onRejectCalled).to.eq(1);
     });
 
+    it("should call onRemove callback", async () => {
+        let removeKey: string;
+        let removeValue: Promise<string>;
+
+        const cache = new PromiseCache<string>(() => Promise.resolve("value"),
+            {
+                checkInterval: 2,
+                onRemove: (key, value) => {
+                    removeKey = key;
+                    removeValue = value;
+                },
+                ttl: 5,
+            });
+
+        await cache.get("key");
+
+        await wait(10);
+
+        expect(removeKey).to.eq("key");
+        expect(await removeValue).to.eq("value");
+    });
+
     it("can use ts-retry-config", async () => {
         const loader = failsOneTime("value");
         const cache = new PromiseCache<string>(() => retry(loader));

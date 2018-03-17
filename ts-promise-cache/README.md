@@ -4,7 +4,7 @@ Loading cache for promises.
 Does not suffer from thundering herds problem (aka [cache stampede](https://en.wikipedia.org/wiki/Cache_stampede)).
 
 ## Usage ##
-The constructor takes a loader that loads missing entries. 
+The constructor takes a loader that loads missing entries.
 By default rejected Promises are not kept in the cache. 
 
 _loader: (key: string) => Promise<T>_
@@ -27,6 +27,8 @@ interface CacheConfig<T> {
     ttl: number | "FOREVER";
     // fallback for rejected promises (default: (error) => Promise.reject(error))
     onReject: (error: Error, key: string, loader: (key: string) => Promise<T>) => Promise<T>;
+    // called before entries is removed for ttl
+    onRemove: (key: string, p: Promise<T>) => void;
     // remove rejected promises? (default: true)
     removeRejected: boolean;
 }
@@ -41,4 +43,4 @@ expect(await cache.get("key")).to.eq("value");
 ```
 
 ## Stats ##
-_zero dependencies, 100% coverage_
+_zero dependencies, 100% test coverage_
