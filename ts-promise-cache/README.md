@@ -34,6 +34,18 @@ interface CacheConfig<T> {
 }
 ```
 
+## Single promise cache ##
+In case you have a single value to cache, use _singlePromiseCache_ factory.
+```typescript
+// singlePromiseCache<T>(loader: () => Promise<T>, config?: Partial<CacheConfig<T>>): () => Promise<T>
+
+const cache = singlePromiseCache(() => Promise.resolve("value"));
+
+const value = await cache();
+expect(value).to.eq("value");
+```
+ 
+
 ## Retry ##
 Retry can by implemented by using [ts-retry-promise](https://www.npmjs.com/package/ts-retry-promise)
 ```typescript

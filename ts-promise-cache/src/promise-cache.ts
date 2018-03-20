@@ -88,3 +88,9 @@ export class PromiseCache<T> {
         return fallback;
     }
 }
+
+export function singlePromiseCache<T>(loader: () => Promise<T>, config?: Partial<CacheConfig<T>>): () => Promise<T> {
+    const cache = new PromiseCache<T>(loader, config);
+
+    return () => cache.get("");
+}
