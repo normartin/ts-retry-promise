@@ -63,7 +63,7 @@ describe("Retry Promise", () => {
         expect(error.message).to.contain("Timeout");
     });
 
-    it("error message should caontain message of last error", async () => {
+    it("error message should contain message of last error", async () => {
         const failer = new Failer(2);
 
         const error = await expectError(retry(() => failer.run(), {delay: 1, retries: 1}));
@@ -104,6 +104,31 @@ describe("Retry Promise", () => {
 
         await wait(20);
         expect(calls).to.eq(1);
+    });
+
+    it("can use logger for retries", async () => {
+        const failer = new Failer(1);
+        const logs: string[] = [];
+        await retry(async () => failer.run(),
+            {
+                delay: 1, logger: (msg) => logs.push(msg),
+            });
+
+        expect(failer.calls).to.eq(2);
+
+        expect(logs).to.deep.eq(["Retry failed: Expected fail. Fails left 0"]);
+    });
+
+    it("can use logger for until", async () => {
+        const logs: string[] = [];
+        await expectError(retry(async () => "value",
+            {
+                delay: 1,
+                logger: (msg) => logs.push(msg),
+                retries: 1,
+                until: (str) => str !== "value",
+            }));
+        expect(logs).to.deep.eq(["Until condition not met by value", "Until condition not met by value"]);
     });
 });
 
