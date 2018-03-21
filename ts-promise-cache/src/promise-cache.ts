@@ -110,11 +110,9 @@ export interface Stats {
 }
 
 class StatsCollector {
-    constructor(private misses: number = 0,
-                private hits: number = 0,
-                private failedLoads: number = 0) {
-
-    }
+    private misses: number = 0;
+    private hits: number = 0;
+    private failedLoads: number = 0;
 
     public export(currentEntries: number): Stats {
         return {
