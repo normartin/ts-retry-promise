@@ -1,6 +1,6 @@
 {
   "name": "ts-promise-cache",
-  "version": "0.0.2-0",
+  "version": "0.1.0",
   "license": "MIT",
   "description": "a loading cache",
   "repository": "https://bitbucket.org/martinmo/ts-tools",
