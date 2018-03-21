@@ -42,6 +42,7 @@ describe("Promise Cache", () => {
         await Promise.all([firstRequest, secondRequest]);
 
         expect(loader.timesLoaded).to.eq(1);
+        expectStats(cache, {hits: 1, misses: 1, entries: 1, failLoads: 0});
     });
 
     it("should cleanup after ttl", async () => {
@@ -55,6 +56,7 @@ describe("Promise Cache", () => {
         await cache.get("key");
 
         expect(loader.timesLoaded).to.eq(2);
+        expectStats(cache, {hits: 0, misses: 2, entries: 1, failLoads: 0});
     });
 
     it("should not remove entry before ttl", async () => {
@@ -68,6 +70,7 @@ describe("Promise Cache", () => {
         await cache.get("key");
 
         expect(loader.timesLoaded).to.eq(1);
+        expectStats(cache, {hits: 1, misses: 1, entries: 1, failLoads: 0});
     });
 
     it("should not cleanup if checkInterval is NEVER", async () => {
@@ -90,6 +93,8 @@ describe("Promise Cache", () => {
 
         const error = await expectError(promise);
         expect(error.message).to.eq("Expected");
+
+        expectStats(cache, {hits: 0, misses: 1, entries: 0, failLoads: 1});
     });
 
     it("removes rejected promises by default", async () => {
@@ -113,6 +118,8 @@ describe("Promise Cache", () => {
         expect(error.message).to.eq("Expected");
 
         expect(calls).to.eq(1);
+
+        expectStats(cache, {hits: 1, misses: 1, entries: 1, failLoads: 1});
     });
 
     it("can use failure handler", async () => {
@@ -218,4 +225,13 @@ function failsOneTime<T>(value: T): () => Promise<T> {
             return Promise.reject(Error("failing for first time"));
         }
     };
+}
+
+function expectStats<T>(cache: PromiseCache<T>,
+                        values: { misses: number, hits: number, failLoads: number, entries: number }) {
+    const stats = cache.statistics();
+    expect(stats.misses).to.eq(values.misses, "misses");
+    expect(stats.hits).to.eq(values.hits, "hits");
+    expect(stats.failedLoads).to.eq(values.failLoads, "failed loads");
+    expect(stats.entries).to.eq(values.entries, "entries");
 }

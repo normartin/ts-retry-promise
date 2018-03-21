@@ -44,7 +44,17 @@ const cache = singlePromiseCache(() => Promise.resolve("value"));
 const value = await cache();
 expect(value).to.eq("value");
 ```
- 
+
+## Statistics ##
+_stats()_ returns statistics:
+ ```typescript
+interface Stats {
+    readonly misses: number;
+    readonly hits: number;
+    readonly entries: number;
+    readonly failedLoads: number;
+}
+ ```
 
 ## Retry ##
 Retry can by implemented by using [ts-retry-promise](https://www.npmjs.com/package/ts-retry-promise)

@@ -38,6 +38,7 @@ export class PromiseCache<T> {
 
     private cache: Map<string, CacheEntry<Promise<T>>> = new Map<string, CacheEntry<Promise<T>>>();
     private readonly config: CacheConfig<T>;
+    private readonly stats = new StatsCollector();
 
     constructor(private readonly loader: (key: string) => Promise<T>, c?: Partial<CacheConfig<T>>) {
         this.config = Object.assign({}, defaultConfig, c);
@@ -52,14 +53,20 @@ export class PromiseCache<T> {
         const found = this.cache.get(key);
 
         if (found) {
+            this.stats.hit();
             return found.value;
         } else {
+            this.stats.miss();
             const loaded = this.loader(key)
                 .catch((error) => this.handleReject(error, key));
 
             this.cache.set(key, new CacheEntry<Promise<T>>(loaded));
             return loaded;
         }
+    }
+
+    public statistics(): Stats {
+        return this.stats.export(this.cache.size);
     }
 
     private cleanUp() {
@@ -79,6 +86,7 @@ export class PromiseCache<T> {
     }
 
     private handleReject(error: Error, key: string): Promise<T> {
+        this.stats.failedLoad();
         const fallback = this.config.onReject(error, key, this.loader);
         if (this.config.removeRejected) {
             this.cache.delete(key);
@@ -93,4 +101,40 @@ export function singlePromiseCache<T>(loader: () => Promise<T>, config?: Partial
     const cache = new PromiseCache<T>(loader, config);
 
     return () => cache.get("");
+}
+
+export interface Stats {
+    readonly misses: number;
+    readonly hits: number;
+    readonly entries: number;
+    readonly failedLoads: number;
+}
+
+class StatsCollector {
+    constructor(private misses: number = 0,
+                private hits: number = 0,
+                private failedLoads: number = 0) {
+
+    }
+
+    public export(currentEntries: number): Stats {
+        return {
+            entries: currentEntries,
+            failedLoads: this.failedLoads,
+            hits: this.hits,
+            misses: this.misses,
+        };
+    }
+
+    public hit() {
+        this.hits += 1;
+    }
+
+    public miss() {
+        this.misses += 1;
+    }
+
+    public failedLoad() {
+        this.failedLoads += 1;
+    }
 }
