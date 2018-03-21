@@ -173,6 +173,32 @@ describe("Promise Cache", () => {
         expect(await removeValue).to.eq("value");
     });
 
+    it("onRemove callback should not prevent cleanup of other entries", async () => {
+        const keysLoaded: string[] = [];
+        const loader = (key) => {
+            keysLoaded.push(key);
+            return Promise.resolve("value");
+        };
+
+        const onRemove = (key) => {
+            if (key === "fail") {
+                throw Error("onRemove");
+            }
+        };
+
+        const cache = new PromiseCache<string>(loader, {checkInterval: 2, onRemove, ttl: 1});
+
+        await cache.get("fail");
+        await cache.get("noFail");
+
+        await wait(10);
+
+        // load again
+        await cache.get("noFail");
+
+        expect(keysLoaded).to.deep.eq(["fail", "noFail", "noFail"]);
+    });
+
     it("can use ts-retry-config", async () => {
         const loader = failsOneTime("value");
         const cache = new PromiseCache<string>(() => retry(loader));

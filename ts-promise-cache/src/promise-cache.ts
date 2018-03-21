@@ -37,14 +37,14 @@ class CacheEntry<T> {
 export class PromiseCache<T> {
 
     private cache: Map<string, CacheEntry<Promise<T>>> = new Map<string, CacheEntry<Promise<T>>>();
-    private readonly config: CacheConfig<T>;
+    private readonly conf: CacheConfig<T>;
     private readonly stats = new StatsCollector();
 
-    constructor(private readonly loader: (key: string) => Promise<T>, c?: Partial<CacheConfig<T>>) {
-        this.config = Object.assign({}, defaultConfig, c);
+    constructor(private readonly loader: (key: string) => Promise<T>, config?: Partial<CacheConfig<T>>) {
+        this.conf = Object.assign({}, defaultConfig, config);
 
-        if (this.config.checkInterval !== "NEVER" && this.config.ttl !== "FOREVER") {
-            const interval = setInterval(() => this.cleanUp(), this.config.checkInterval);
+        if (this.conf.checkInterval !== "NEVER" && this.conf.ttl !== "FOREVER") {
+            const interval = setInterval(() => this.cleanUp(), this.conf.checkInterval);
             interval.unref();
         }
     }
@@ -75,20 +75,21 @@ export class PromiseCache<T> {
         // workaround as for(const it of this.cache.entries()) does not work
         Array.from(this.cache.entries()).forEach((it) => {
             const [key, entry] = it;
-            if ((entry.lastAccess + (this.config.ttl as number)) < now) {
+            if ((entry.lastAccess + (this.conf.ttl as number)) < now) {
                 try {
-                    this.config.onRemove(key, entry.value);
-                } finally {
-                    this.cache.delete(key);
+                    this.conf.onRemove(key, entry.value);
+                } catch (error) {
+                    // nothing we can do
                 }
+                this.cache.delete(key);
             }
         });
     }
 
     private handleReject(error: Error, key: string): Promise<T> {
         this.stats.failedLoad();
-        const fallback = this.config.onReject(error, key, this.loader);
-        if (this.config.removeRejected) {
+        const fallback = this.conf.onReject(error, key, this.loader);
+        if (this.conf.removeRejected) {
             this.cache.delete(key);
         } else {
             this.cache.set(key, new CacheEntry<Promise<T>>(fallback));
