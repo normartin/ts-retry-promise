@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "alwaysStrict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "alwaysStrict": false,
     "preserveConstEnums": true,
     "sourceMap": true,
     "declaration": true,

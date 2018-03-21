@@ -132,6 +132,21 @@ describe("Promise Cache", () => {
         expect(await promise).to.eq("fallback");
     });
 
+    it("failure handler puts result in cache if removeRejected:false", async () => {
+        let calls = 0;
+        const cache = new PromiseCache<string>(async () => {
+                calls += 1;
+                throw Error("failed to load");
+            },
+            {onReject: () => Promise.resolve("fallback"), removeRejected: false},
+        );
+
+        const values = await Promise.all([cache.get("key"), cache.get("key")]);
+
+        expect(values).to.deep.eq(["fallback", "fallback"]);
+        expect(calls).to.eq(1);
+    });
+
     it("calls failure handler only once", async () => {
         let onRejectCalled = 0;
         const cache = new PromiseCache<string>(failsOneTime("value"), {

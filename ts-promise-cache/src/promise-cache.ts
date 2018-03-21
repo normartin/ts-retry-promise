@@ -18,7 +18,7 @@ const defaultConfig: CacheConfig<any> = {
     onReject: (error) => Promise.reject(error),
     onRemove: () => undefined,
     removeRejected: true,
-    ttl: -1,
+    ttl: "FOREVER",
 };
 
 class CacheEntry<T> {
@@ -91,8 +91,6 @@ export class PromiseCache<T> {
         const fallback = this.conf.onReject(error, key, this.loader);
         if (this.conf.removeRejected) {
             this.cache.delete(key);
-        } else {
-            this.cache.set(key, new CacheEntry<Promise<T>>(fallback));
         }
         return fallback;
     }
