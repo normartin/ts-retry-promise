@@ -3,8 +3,8 @@
   "version": "0.0.10",
   "license": "MIT",
   "description": "retry for functions returning a promise",
-  "repository": "https://github.com/normartin/ts-tools",
-  "bugs": "https://bitbucket.org/martinmo/ts-tools/issues",
+  "repository": "https://github.com/normartin/ts-retry-promise",
+  "bugs": "https://github.com/normartin/ts-retry-promise/issues",
   "keywords": [
     "promise",
     "retry",
