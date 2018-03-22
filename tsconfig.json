@@ -5,9 +5,17 @@
     "sourceMap": true,
     "declaration": true,
     "target": "es5",
+    "outDir": "dist",
     "lib": [
       "es2015",
       "es6"
     ]
-  }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "ts-retry-promise/node_modules",
+    "dist"
+  ]
 }

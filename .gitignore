@@ -1,8 +1,7 @@
-node_modules
+node_modules/
 .idea
 reports/
-dist
-.nyc_output
+dist/
+.nyc_output/
 *.iml
-lerna-debug.log
 yarn-error.log
