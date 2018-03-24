@@ -31,11 +31,19 @@ describe("Retry Promise Demo", () => {
         await retry(async () => {
             // your code
         }, {
-            delay: 100, // wait time between retries
-            logger: (message) => undefined, // log events
-            retries: 10, // number of retry attempts
-            timeout: 60 * 1000, // overall timeout
-            until: () => true, // check the result
+            // increase delay with every retry
+            // possible values: "FIXED" | "EXPONENTIAL" | "LINEAR" | ((attempt: number, delay: number) => number)
+            backoff: "FIXED",
+            // wait time between retries
+            delay: 100,
+            // log events
+            logger: (message) => undefined,
+            // number of retry attempts
+            retries: 10,
+            // overall timeout
+            timeout: 60 * 1000,
+            // check the result
+            until: () => true,
         });
 
     });
@@ -43,8 +51,8 @@ describe("Retry Promise Demo", () => {
     it("will retry until condition is met or limit reached", async () => {
 
         await retry(
-            () => browser.$("ul"),
-            {until: (list) => list.length === 6});
+            () => browser.$$("ul"),
+            {until: (list) => list.length === 2});
 
     });
 
@@ -85,5 +93,8 @@ describe("Retry Promise Demo", () => {
 const browser = {
     async $(cssSelector: string): Promise<string> {
         return "Loaded";
+    },
+    async $$(cssSelector: string): Promise<string[]> {
+        return ["Loaded", "Loaded"];
     },
 };

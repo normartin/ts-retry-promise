@@ -6,11 +6,19 @@ export interface RetryConfig<T> {
     until?: (t: T) => boolean;
     logger?: (msg: string) => void;
     timeout?: number;
+    backoff?: "FIXED" | "EXPONENTIAL" | "LINEAR" | ((attempt: number, delay: number) => number);
+    maxBackOff?: number;
 }
 
+const fixedBackoff = (attempt: number, delay: number) => delay;
+const linearBackoff = (attempt: number, delay: number) => attempt * delay;
+const exponentialBackoff = (attempt: number, delay: number) => Math.pow(delay, attempt);
+
 export const defaultRetryConfig: RetryConfig<any> = {
+    backoff: "FIXED",
     delay: 100,
     logger: () => undefined,
+    maxBackOff: 5 * 60 * 1000,
     retries: 10,
     timeout: 60 * 1000,
     until: () => true,
@@ -22,6 +30,21 @@ export async function wait(ms: number): Promise<void> {
 
 export async function retry<T>(f: () => Promise<T>, config?: RetryConfig<T>): Promise<T> {
     config = Object.assign({}, defaultRetryConfig, config);
+
+    switch (config.backoff) {
+        case "EXPONENTIAL":
+            config.backoff = exponentialBackoff;
+            break;
+        case "FIXED":
+            config.backoff = fixedBackoff;
+            break;
+        case "LINEAR":
+            config.backoff = linearBackoff;
+            break;
+        default:
+        // from config
+    }
+
     const cancel = exposedPromise();
     return timeout(_retry(f, config, cancel.promise), config.timeout, cancel.resolve);
 }
@@ -37,6 +60,8 @@ export function customizeRetry<T>(customConfig: RetryConfig<T>): <T>(f: () => Pr
 async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, canceled: Promise<void>): Promise<T> {
     let latestError: Error;
     let stop = false;
+    const delay = config.backoff as (attempt: number, delay: number) => number;
+
     canceled.then(() => stop = true);
     for (let i = 0; i <= config.retries && !stop; i++) {
         try {
@@ -49,7 +74,8 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, canceled: 
             latestError = error;
             config.logger("Retry failed: " + error.message);
         }
-        await wait(config.delay);
+        const millisToWait = delay(i + 1, config.delay);
+        await wait(millisToWait > config.maxBackOff ? config.maxBackOff : millisToWait);
     }
     throw Error(`All retries failed. Last error: ${latestError}`);
 }

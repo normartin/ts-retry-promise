@@ -6,6 +6,10 @@
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.2.tgz#f1af664769cfb50af805431c407425ed619daa21"
 
+"@types/lolex@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@types/lolex/-/lolex-2.1.2.tgz#40fb763baf260ed5de0685a6257ba98c1286e173"
+
 "@types/mocha@^2.2.48":
   version "2.2.48"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.48.tgz#3523b126a0b049482e1c3c11877460f76622ffab"
@@ -1579,6 +1583,10 @@ log4js@^1.0.1, log4js@^1.1.0, log4js@^1.1.1:
     debug "^2.2.0"
     semver "^5.3.0"
     streamroller "^0.4.0"
+
+lolex@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/lolex/-/lolex-2.3.2.tgz#85f9450425103bf9e7a60668ea25dc43274ca807"
 
 longest@^1.0.1:
   version "1.0.1"
