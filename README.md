@@ -44,19 +44,22 @@ export interface RetryConfig<T> {
 
 ## Customize ##
 
-_customizeRetry_ returns a new instance of _retry_ that has defined default configuration.
+_customizeRetry_ returns a new instance of _retry_ that has the defined default configuration.
 
 ```typescript
+const impatientRetry = customizeRetry({timeout: 5});
 
-const retryUntilNotEmpty = customizeRetry<T[]>({until: (array: T[]) => array.length > 0});
-const result = await retryUntilNotEmpty(async () => [1, 2]);
-expect(result).to.deep.eq([1, 2]);
+const error = await expectError(impatientRetry(async () => wait(10)));
+
+expect(error.message).to.contain("Timeout");
 
 // another example
 
-const impatientRetry = customizeRetry({timeout: 5});
-const error = await expectError(impatientRetry(async () => wait(10)));
-expect(error.message).to.contain("Timeout");
+const retryUntilNotEmpty = customizeRetry({until: (array: any[]) => array.length > 0});
+
+const result = await retryUntilNotEmpty(async () => [1, 2]);
+
+expect(result).to.deep.eq([1, 2]);
 ```
 
 ## Samples ##
