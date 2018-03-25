@@ -1,12 +1,25 @@
 import {isArray, isNullOrUndefined} from "util";
 
 export interface RetryConfig<T> {
+    // number of maximal retry attempts (default: 10)
     retries?: number;
+
+    // wait time between retries in ms (default: 100)
     delay?: number;
+
+    // check the result, will retry until true (default: () => true)
     until?: (t: T) => boolean;
+
+    // log events (default: () => undefined)
     logger?: (msg: string) => void;
+
+    // overall timeout in ms (default: 60 * 1000)
     timeout?: number;
+
+    // increase delay with every retry (default: "FIXED")
     backoff?: "FIXED" | "EXPONENTIAL" | "LINEAR" | ((attempt: number, delay: number) => number);
+
+    // maximal backoff in ms (default: 5 * 60 * 1000)
     maxBackOff?: number;
 }
 

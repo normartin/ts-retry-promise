@@ -7,13 +7,64 @@
 
 _retry for functions returning a promise_
 
-I use this heavily in UI tests. 
-Repeats the call to a function that returns a promise until a resolved promise is returned.
-Optionally a predicate on the result can be specified.
+
+```typescript
+function retry<T>(f: () => Promise<T>, config?: RetryConfig<T>): Promise<T> {}
+```
+
+_retry_ will repeatedly call _f_ until a resolved _Promise_ is returned. 
+Optionally a predicate can be specified, against which the result will be checked.
+
+Several aspects of the execution can be configured:
+
+```typescript
+export interface RetryConfig<T> {
+    // number of maximal retry attempts (default: 10)
+    retries?: number;
+
+    // wait time between retries in ms (default: 100)
+    delay?: number;
+
+    // check the result, will retry until true (default: () => true)
+    until?: (t: T) => boolean;
+
+    // log events (default: () => undefined)
+    logger?: (msg: string) => void;
+
+    // overall timeout in ms (default: 60 * 1000)
+    timeout?: number;
+
+    // increase delay with every retry (default: "FIXED")
+    backoff?: "FIXED" | "EXPONENTIAL" | "LINEAR" | ((attempt: number, delay: number) => number);
+
+    // maximal backoff in ms (default: 5 * 60 * 1000)
+    maxBackOff?: number;
+}
+```
+
+## Customize ##
+
+_customizeRetry_ returns a new instance of _retry_ that has defined default configuration.
+
+```typescript
+
+const retryUntilNotEmpty = customizeRetry<T[]>({until: (array: T[]) => array.length > 0});
+const result = await retryUntilNotEmpty(async () => [1, 2]);
+expect(result).to.deep.eq([1, 2]);
+
+// another example
+
+const impatientRetry = customizeRetry({timeout: 5});
+const error = await expectError(impatientRetry(async () => wait(10)));
+expect(error.message).to.contain("Timeout");
+```
+
+## Samples ##
+
+_retry_ is well suited for acceptance tests (but not restricted to).
 
 ```typescript
 // ts-retry-promise/test/retry-promise.demo.test.ts
-
 it("will retry until no exception or limit reached", async () => {
 
     await retry(async () => {
@@ -39,21 +90,15 @@ it("can be configured and has defaults", async () => {
 
     await retry(async () => {
         // your code
-    }, {
-        delay: 100, // wait time between retries
-        logger: (message) => undefined, // log events
-        retries: 10, // number of retry attempts
-        timeout: 60 * 1000, // overall timeout
-        until: () => true, // check the result
-    });
+    }, {backoff: "LINEAR", retries: 100});
 
 });
 
 it("will retry until condition is met or limit reached", async () => {
 
     await retry(
-        () => browser.$("ul"),
-        {until: (list) => list.length === 6});
+        () => browser.$$("ul"),
+        {until: (list) => list.length === 2});
 
 });
 

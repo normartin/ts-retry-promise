@@ -30,21 +30,7 @@ describe("Retry Promise Demo", () => {
 
         await retry(async () => {
             // your code
-        }, {
-            // increase delay with every retry
-            // possible values: "FIXED" | "EXPONENTIAL" | "LINEAR" | ((attempt: number, delay: number) => number)
-            backoff: "FIXED",
-            // wait time between retries
-            delay: 100,
-            // log events
-            logger: (message) => undefined,
-            // number of retry attempts
-            retries: 10,
-            // overall timeout
-            timeout: 60 * 1000,
-            // check the result
-            until: () => true,
-        });
+        }, {backoff: "LINEAR", retries: 100});
 
     });
 
@@ -73,6 +59,14 @@ describe("Retry Promise Demo", () => {
         const error = await expectError(impatientRetry(async () => wait(10)));
 
         expect(error.message).to.contain("Timeout");
+    });
+
+    it("can create another customized retry", async () => {
+        const retryUntilNotEmpty = customizeRetry<T[]>({until: (array: T[]) => array.length > 0});
+
+        const result = await retryUntilNotEmpty(async () => [1, 2]);
+
+        expect(result).to.deep.eq([1, 2]);
     });
 
     it("can customize default config", async () => {
