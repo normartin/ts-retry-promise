@@ -2,7 +2,7 @@ import {isArray, isNullOrUndefined} from "util";
 
 export interface RetryConfig<T> {
     // number of maximal retry attempts (default: 10)
-    retries?: number;
+    retries?: number | "INFINITELY";
 
     // wait time between retries in ms (default: 100)
     delay?: number;
@@ -56,6 +56,10 @@ export async function retry<T>(f: () => Promise<T>, config?: RetryConfig<T>): Pr
             break;
         default:
         // from config
+    }
+
+    if (config.retries === "INFINITELY") {
+        config.retries = Number.MAX_SAFE_INTEGER;
     }
 
     const cancel = exposedPromise();

@@ -20,7 +20,7 @@ Several aspects of the execution can be configured:
 ```typescript
 export interface RetryConfig<T> {
     // number of maximal retry attempts (default: 10)
-    retries?: number;
+    retries?: number | "INFINITELY";
 
     // wait time between retries in ms (default: 100)
     delay?: number;

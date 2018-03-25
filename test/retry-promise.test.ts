@@ -130,6 +130,15 @@ describe("Retry Promise", () => {
             }));
         expect(logs).to.deep.eq(["Until condition not met by value", "Until condition not met by value"]);
     });
+
+    it("retry a lot when retries is INFINITELY", async () => {
+        const failer = new Failer(Number.MAX_SAFE_INTEGER);
+
+        const error = await expectError(retry(() => failer.run(), {delay: 0, retries: "INFINITELY", timeout: 100}));
+
+        expect(error.message).to.contain("Timeout");
+        expect(failer.calls).to.be.greaterThan(10);
+    });
 });
 
 class Failer {
