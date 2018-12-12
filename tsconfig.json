@@ -2,6 +2,7 @@
   "compilerOptions": {
     "noImplicitAny": true,
     "preserveConstEnums": true,
+    "strict": true,
     "sourceMap": true,
     "declaration": true,
     "target": "es5",

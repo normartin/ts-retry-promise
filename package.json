@@ -54,7 +54,7 @@
     "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
     "tslint-no-unused-expression-chai": "^0.0.3",
-    "typescript": "^2.7.2"
+    "typescript": "^2.9.2"
   },
   "nyc": {
     "all": true,

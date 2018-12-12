@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import "mocha";
-import {customizeRetry, defaultRetryConfig, notEmpty, retry, RetryConfig, wait} from "../src/retry-promise";
+import {customizeRetry, defaultRetryConfig, notEmpty, retry, wait} from "../src/retry-promise";
 
 describe("Retry Promise", () => {
 
@@ -24,7 +24,7 @@ describe("Retry Promise", () => {
     it("should not alter config", async () => {
         const failer = new Failer(1);
 
-        const config: RetryConfig<any> = {
+        const config = {
             retries: 3,
         };
 
