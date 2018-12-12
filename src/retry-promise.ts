@@ -72,11 +72,7 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, canceled: 
             delay = linearBackoff;
             break;
         default:
-            if (typeof config.backoff === "function") {
-                delay = config.backoff as (attempt: number, delay: number) => number;
-            } else {
-                throw Error("unsupported backoff");
-            }
+            delay = config.backoff as (attempt: number, delay: number) => number;
     }
 
     let retries: number;
