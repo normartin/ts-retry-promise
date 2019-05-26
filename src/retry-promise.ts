@@ -133,11 +133,8 @@ interface ExposedPromiseInterface {
 }
 
 function exposedPromise(): ExposedPromiseInterface {
-    const result: Partial<ExposedPromiseInterface> = {
-        promise: undefined,
-        reject: undefined,
-        resolve: undefined,
-    };
+    const result: Partial<ExposedPromiseInterface> = {};
+
     result.promise = new Promise<void>((resolve, reject) => {
         result.resolve = resolve;
         result.reject = reject;
