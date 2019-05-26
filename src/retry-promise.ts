@@ -1,4 +1,3 @@
-import {isArray, isNullOrUndefined} from "util";
 
 export interface RetryConfig<T> {
     // number of maximal retry attempts (default: 10)
@@ -101,10 +100,10 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, canceled: 
 }
 
 export const notEmpty = (result: any) => {
-    if (isArray(result)) {
+    if (Array.isArray(result)) {
         return result.length > 0;
     }
-    return !isNullOrUndefined(result);
+    return result !== null && result !== undefined;
 };
 
 function timeout<T>(p: Promise<T>, time: number, onTimeout: () => void): Promise<T> {
