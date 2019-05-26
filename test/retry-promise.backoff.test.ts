@@ -1,12 +1,13 @@
 import {expect} from "chai";
 import * as lolex from "lolex";
 import {Clock} from "lolex";
+import {InstalledClock} from "lolex";
 import "mocha";
 import {retry} from "../src/retry-promise";
 
 describe("Backoff tests", () => {
 
-    let mockClock: Clock;
+    let mockClock: InstalledClock<Clock>;
 
     beforeEach(() => {
         mockClock = lolex.install();
