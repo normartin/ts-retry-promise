@@ -1,5 +1,4 @@
 import {expect} from "chai";
-import "mocha";
 import {customizeRetry, defaultRetryConfig, retry, RetryConfig, wait} from "../src/retry-promise";
 import {expectError} from "./retry-promise.test";
 

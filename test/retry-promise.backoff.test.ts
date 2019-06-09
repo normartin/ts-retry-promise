@@ -2,7 +2,6 @@ import {expect} from "chai";
 import * as lolex from "lolex";
 import {Clock} from "lolex";
 import {InstalledClock} from "lolex";
-import "mocha";
 import {retry} from "../src/retry-promise";
 
 describe("Backoff tests", () => {

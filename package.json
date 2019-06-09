@@ -21,18 +21,19 @@
     "node": ">=6"
   },
   "scripts": {
-    "cleanup": "del-cli dist reports .nyc_output",
+    "cleanup": "del-cli dist reports .nyc_output test/browser/bundle.js",
     "prebuild": "npm run cleanup",
     "build": "tsc",
     "test": "mocha",
-    "posttest": "npm run tslint",
+    "posttest": "npm run tslint && npm run build-browser-tests",
     "tslint": "tslint 'src/**/*.ts' 'test/**/*.ts'",
     "coverage": "nyc mocha",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "validate": "npm run tslint && npm run coverage",
     "prerelease": "npm run validate",
     "release": "npm run build && npm run publish",
-    "mutation-test": "stryker run"
+    "mutation-test": "stryker run",
+    "build-browser-tests": "browserify -p tsify test/browser/browser-tests.ts > test/browser/bundle.js"
   },
   "devDependencies": {
     "@stryker-mutator/core": "^2.0.0",
@@ -44,6 +45,7 @@
     "@types/lolex": "^3.1.1",
     "@types/mocha": "^5.2.6",
     "@types/node": "^12.0.2",
+    "browserify": "^16.2.3",
     "chai": "^4.2.0",
     "coveralls": "^3.0.3",
     "del-cli": "^1.1.0",
@@ -51,6 +53,7 @@
     "mocha": "^6.1.4",
     "nyc": "^14.1.1",
     "ts-node": "^8.2.0",
+    "tsify": "^4.0.1",
     "tslint": "^5.16.0",
     "tslint-no-unused-expression-chai": "^0.1.4",
     "typescript": "^3.4.5"

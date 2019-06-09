@@ -6,3 +6,4 @@ dist/
 *.iml
 yarn-error.log
 .stryker-tmp
+test/browser/bundle.js
