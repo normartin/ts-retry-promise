@@ -7,6 +7,21 @@
 
 _retry for functions returning a promise_
 
+## Usage
+
+Install with yarn:
+`yarn add ts-retry-promise`
+
+Install with npm:
+`npm install --save ts-retry-promise`
+
+Then you can import it with:
+
+```typescript
+import { retry } from 'ts-retry-promise';
+```
+
+## Interface
 
 ```typescript
 function retry<T>(f: () => Promise<T>, config?: RetryConfig<T>): Promise<T> {}
