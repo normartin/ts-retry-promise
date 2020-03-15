@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {customizeRetry, defaultRetryConfig, retry, RetryConfig, wait} from "../src/retry-promise";
+import {customizeRetry, defaultRetryConfig, retry, wait} from "../src/retry-promise";
 import {expectError} from "./retry-promise.test";
 
 describe("Retry Promise Demo", () => {
@@ -61,7 +61,7 @@ describe("Retry Promise Demo", () => {
     });
 
     it("can create another customized retry", async () => {
-        const retryUntilNotEmpty = customizeRetry({until: (array: any[]) => array.length > 0});
+        const retryUntilNotEmpty = customizeRetry({until: (array: number[]) => array.length > 0});
 
         const result = await retryUntilNotEmpty(async () => [1, 2]);
 

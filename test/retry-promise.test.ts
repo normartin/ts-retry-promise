@@ -1,6 +1,12 @@
 import {expect} from "chai";
 import {customizeRetry, defaultRetryConfig, notEmpty, retry, wait} from "../src/retry-promise";
 
+process.on("unhandledRejection", (error) => {
+    // tslint:disable-next-line
+    console.error("unhandledRejection", error);
+    process.exit(1);
+});
+
 describe("Retry Promise", () => {
 
     it("should retry correct number of times", async () => {

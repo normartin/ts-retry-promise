@@ -1,3 +1,4 @@
+import {timeout} from "./timeout";
 
 export interface RetryConfig<T> {
     // number of maximal retry attempts (default: 10)
@@ -42,8 +43,7 @@ export async function wait(ms: number): Promise<void> {
 
 export async function retry<T>(f: () => Promise<T>, config?: Partial<RetryConfig<T>>): Promise<T> {
     const effectiveConfig: RetryConfig<T> = Object.assign({}, defaultRetryConfig, config) as RetryConfig<T>;
-    const cancel = exposedPromise();
-    return timeout(_retry(f, effectiveConfig, cancel.promise), effectiveConfig.timeout, cancel.resolve);
+    return timeout(effectiveConfig.timeout, (done) => _retry(f, effectiveConfig, done));
 }
 
 // tslint:disable-next-line
@@ -54,9 +54,8 @@ export function customizeRetry<T>(customConfig: Partial<RetryConfig<T>>): <T>(f:
     };
 }
 
-async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, canceled: Promise<void>): Promise<T> {
+async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, done: () => boolean): Promise<T> {
     let latestError: Error;
-    let stop = false;
 
     let delay: (attempt: number, delay: number) => number;
 
@@ -71,7 +70,7 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, canceled: 
             delay = linearBackoff;
             break;
         default:
-            delay = config.backoff as (attempt: number, delay: number) => number;
+            delay = config.backoff;
     }
 
     let retries: number;
@@ -81,8 +80,7 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, canceled: 
         retries = config.retries;
     }
 
-    canceled.then(() => stop = true);
-    for (let i = 0; i <= retries && !stop; i++) {
+    for (let i = 0; i <= retries; i++) {
         try {
             const result = await f();
             if (config.until(result)) {
@@ -95,6 +93,10 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, canceled: 
         }
         const millisToWait = delay(i + 1, config.delay);
         await wait(millisToWait > config.maxBackOff ? config.maxBackOff : millisToWait);
+
+        if (done()) {
+            break;
+        }
     }
     throw Error(`All retries failed. Last error: ${latestError!}`);
 }
@@ -105,38 +107,3 @@ export const notEmpty = (result: any) => {
     }
     return result !== null && result !== undefined;
 };
-
-function timeout<T>(p: Promise<T>, time: number, onTimeout: () => void): Promise<T> {
-    return new Promise<T>((resolve, reject) => {
-        const timer = setTimeout(() => {
-            reject(new Error("Timeout after " + time));
-            onTimeout();
-        }, time);
-
-        return p
-            .then((result) => {
-                clearTimeout(timer);
-                resolve(result);
-            })
-            .catch((error) => {
-                clearTimeout(timer);
-                reject(error);
-            });
-    });
-}
-
-interface ExposedPromiseInterface {
-    promise: Promise<void>;
-    resolve: () => void;
-    reject: () => void;
-}
-
-function exposedPromise(): ExposedPromiseInterface {
-    const result: Partial<ExposedPromiseInterface> = {};
-
-    result.promise = new Promise<void>((resolve, reject) => {
-        result.resolve = resolve;
-        result.reject = reject;
-    });
-    return result as ExposedPromiseInterface;
-}
