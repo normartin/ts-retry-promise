@@ -25,4 +25,21 @@ jobs:
     - run: npm ci
     - run: npm run build
     - run: npm run validate
-    - run: npm run coveralls
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        parallel: true
+        path-to-lcov: ./reports/coverage/lcov.info
+
+  coveralls-finished:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
