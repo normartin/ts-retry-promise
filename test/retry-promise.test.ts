@@ -1,11 +1,5 @@
-import {expect} from "chai";
+import {expect} from "./index";
 import {customizeRetry, defaultRetryConfig, notEmpty, retry, wait} from "../src/retry-promise";
-
-process.on("unhandledRejection", (error) => {
-    // tslint:disable-next-line
-    console.error("unhandledRejection", error);
-    process.exit(1);
-});
 
 describe("Retry Promise", () => {
 
@@ -21,7 +15,7 @@ describe("Retry Promise", () => {
     it("should fail if all retries are done", async () => {
         const failer = new Failer(2);
 
-        await expectError(retry(() => failer.run(), {delay: 10, retries: 1}));
+        await expect(retry(() => failer.run(), {delay: 10, retries: 1})).to.be.rejected;
 
         expect(failer.calls).to.eq(2);
     });
@@ -63,25 +57,23 @@ describe("Retry Promise", () => {
     });
 
     it("should throw on timeout", async () => {
-        const error = await expectError(retry(() => wait(100), {timeout: 10}));
+        const timeoutPromise = retry(() => wait(100), {timeout: 10});
 
-        expect(error.message).to.contain("Timeout");
+        await expect(timeoutPromise).to.be.rejectedWith("Timeout");
     });
 
     it("error message should contain message of last error", async () => {
         const failer = new Failer(2);
 
-        const error = await expectError(retry(() => failer.run(), {delay: 1, retries: 1}));
+        const failedPromise = retry(() => failer.run(), {delay: 1, retries: 1});
 
-        expect(error.message).to.contain("Expected fail.");
+        await expect(failedPromise).to.be.rejectedWith("Expected fail.");
     });
 
     it("can create a customized retry", async () => {
         const shortRetry = customizeRetry({timeout: 5});
 
-        const error = await expectError(shortRetry(async () => wait(10)));
-
-        expect(error.message).to.contain("Timeout");
+        await expect(shortRetry(async () => wait(10))).to.be.rejectedWith("Timeout");
     });
 
     it("can customize default config", async () => {
@@ -89,9 +81,7 @@ describe("Retry Promise", () => {
         try {
             defaultRetryConfig.timeout = 1;
 
-            const error = await expectError(retry(async () => wait(10)));
-
-            expect(error.message).to.contain("Timeout");
+            await expect(retry(async () => wait(10))).to.be.rejectedWith("Timeout");
         } finally {
             defaultRetryConfig.timeout = originalTimeout;
         }
@@ -99,13 +89,14 @@ describe("Retry Promise", () => {
 
     it("should stop retry after timeout", async () => {
         let calls = 0;
-        const error = await expectError(retry(async () => {
+
+        const timedout = retry(async () => {
             calls += 1;
             await wait(5);
             throw Error();
-        }, {timeout: 2, delay: 1}));
+        }, {timeout: 2, delay: 1});
 
-        expect(error.message).to.contain("Timeout");
+        await expect(timedout).to.be.rejectedWith("Timeout");
 
         await wait(20);
         expect(calls).to.eq(1);
@@ -126,22 +117,25 @@ describe("Retry Promise", () => {
 
     it("can use logger for until", async () => {
         const logs: string[] = [];
-        await expectError(retry(async () => "value",
+
+        const result = retry(async () => "value",
             {
                 delay: 1,
                 logger: (msg) => logs.push(msg),
                 retries: 1,
                 until: (str) => str !== "value",
-            }));
+            });
+
+        await expect(result).to.be.rejected;
         expect(logs).to.deep.eq(["Until condition not met by value", "Until condition not met by value"]);
     });
 
     it("retry a lot when retries is INFINITELY", async () => {
         const failer = new Failer(Number.MAX_SAFE_INTEGER);
 
-        const error = await expectError(retry(() => failer.run(), {delay: 0, retries: "INFINITELY", timeout: 100}));
+        const result = retry(() => failer.run(), {delay: 0, retries: "INFINITELY", timeout: 100});
 
-        expect(error.message).to.contain("Timeout");
+        await expect(result).to.be.rejectedWith("Timeout");
         expect(failer.calls).to.be.greaterThan(10);
     });
 });
@@ -163,14 +157,4 @@ class Failer {
             throw Error("Expected fail. Fails left " + this.fails);
         }
     }
-}
-
-export async function expectError<T>(p: Promise<T>): Promise<Error> {
-    let result: T;
-    try {
-        result = await p;
-    } catch (error) {
-        return error;
-    }
-    throw Error("Expected error, but got " + result);
 }

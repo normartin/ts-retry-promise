@@ -64,9 +64,7 @@ _customizeRetry_ returns a new instance of _retry_ that has the defined default 
 ```typescript
 const impatientRetry = customizeRetry({timeout: 5});
 
-const error = await expectError(impatientRetry(async () => wait(10)));
-
-expect(error.message).to.contain("Timeout");
+await expect(impatientRetry(async () => wait(10))).to.be.rejectedWith("Timeout");
 
 // another example
 
@@ -127,16 +125,21 @@ it("can have a timeout", async () => {
         {timeout: 10},
     );
 
-    const error = await expectError(promise);
-    expect(error.message).to.contain("Timeout");
+    await expect(promise).to.be.rejectedWith("Timeout");
 });
 
 it("can create a customized retry", async () => {
     const impatientRetry = customizeRetry({timeout: 5});
 
-    const error = await expectError(impatientRetry(async () => wait(10)));
+    await expect(impatientRetry(async () => wait(10))).to.be.rejectedWith("Timeout");
+});
 
-    expect(error.message).to.contain("Timeout");
+it("can create another customized retry", async () => {
+    const retryUntilNotEmpty = customizeRetry({until: (array: number[]) => array.length > 0});
+
+    const result = await retryUntilNotEmpty(async () => [1, 2]);
+
+    expect(result).to.deep.eq([1, 2]);
 });
 
 it("can customize default config", async () => {
@@ -144,9 +147,7 @@ it("can customize default config", async () => {
     try {
         defaultRetryConfig.timeout = 1;
 
-        const error = await expectError(retry(async () => wait(10)));
-
-        expect(error.message).to.contain("Timeout");
+        await expect(retry(async () => wait(10))).to.be.rejectedWith("Timeout");
     } finally {
         defaultRetryConfig.timeout = originalTimeout;
     }

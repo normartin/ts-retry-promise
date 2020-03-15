@@ -1,7 +1,6 @@
-import {expect} from "chai";
+import {expect} from "./index";
 import {wait} from "../src/retry-promise";
 import {timeout} from "../src/timeout";
-import {expectError} from "./retry-promise.test";
 
 describe("Timeout", () => {
 
@@ -9,9 +8,7 @@ describe("Timeout", () => {
 
         const promise = timeout(1, () => wait(10));
 
-        const error = await expectError(promise);
-
-        expect(error.message).to.eq("Timeout after 1ms");
+        await expect(promise).to.be.rejectedWith("Timeout after 1ms");
 
     });
 
@@ -39,9 +36,8 @@ describe("Timeout", () => {
         promise.catch(() => events.push("failed"));
 
         await wait(20);
-        const error = await expectError(promise);
 
-        expect(error.message).to.contain("Timeout");
+        await expect(promise).to.be.rejectedWith("Timeout");
         expect(events).to.deep.eq(["done false", "failed", "done true"]);
 
     });
