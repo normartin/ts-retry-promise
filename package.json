@@ -30,7 +30,7 @@
     "coverage": "nyc mocha",
     "validate": "npm run tslint && npm run coverage",
     "prerelease": "npm run validate",
-    "release": "npm run build && npm run publish",
+    "release": "npm run build && npm publish",
     "mutation-test": "stryker run",
     "build-browser-tests": "browserify -p tsify test/browser/browser-tests.ts > test/browser/bundle.js"
   },
