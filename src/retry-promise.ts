@@ -47,7 +47,7 @@ export async function retry<T>(f: () => Promise<T>, config?: Partial<RetryConfig
 }
 
 // tslint:disable-next-line
-export function customizeRetry<T>(customConfig: Partial<RetryConfig<T>>): <T>(f: () => Promise<T>, config?: RetryConfig<T>) => Promise<T> {
+export function customizeRetry<T>(customConfig: Partial<RetryConfig<T>>): (f: () => Promise<T>, config?: RetryConfig<T>) => Promise<T> {
     return (f, c) => {
         const customized = Object.assign({}, customConfig, c);
         return retry(f, customized);
