@@ -13,6 +13,15 @@ export const timeout: <T>(millis: number, f: (done: () => boolean) => Promise<T>
         const result = f(doneF);
         // result.finally(() => clearTimeout(timeoutRef));
 
-        result.then(resolve).catch(reject).finally(() => clearTimeout(timeoutRef));
+        result.then(
+            r => {
+                resolve(r);
+                clearTimeout(timeoutRef);
+            },
+            e => {
+                reject(e);
+                clearTimeout(timeoutRef);
+            }
+        );
     });
 };
