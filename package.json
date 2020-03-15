@@ -28,7 +28,6 @@
     "posttest": "npm run tslint && npm run build-browser-tests",
     "tslint": "tslint 'src/**/*.ts' 'test/**/*.ts'",
     "coverage": "nyc mocha",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "validate": "npm run tslint && npm run coverage",
     "prerelease": "npm run validate",
     "release": "npm run build && npm run publish",
@@ -82,7 +81,8 @@
     ],
     "reporter": [
       "text",
-      "html"
+      "html",
+      "lcov"
     ],
     "sourceMap": true,
     "instrument": true,
