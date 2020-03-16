@@ -19,6 +19,8 @@ Then you can import it with:
 
 ```typescript
 import { retry } from 'ts-retry-promise';
+
+const result = await retry(() => Promise.resolve(1), {retries: 3});
 ```
 
 ## Interface
