@@ -1,5 +1,5 @@
 import {expect} from "./index";
-import {customizeRetry, defaultRetryConfig, retry, wait} from "../src/retry-promise";
+import {customizeRetry, defaultRetryConfig, retry, retryDecorator, wait} from "../src/retry-promise";
 
 describe("Retry Promise Demo", () => {
 
@@ -73,6 +73,17 @@ describe("Retry Promise Demo", () => {
         } finally {
             defaultRetryConfig.timeout = originalTimeout;
         }
+    });
+
+    it("can use decorator", async () => {
+
+        type AsyncFunc = (s: string) => Promise<string>
+
+        const asyncFunction: AsyncFunc = async s => s;
+
+        const asyncFunctionDecorated: AsyncFunc = retryDecorator(asyncFunction, {timeout: 1});
+
+        expect(asyncFunctionDecorated("1")).to.eventually.eq("1")
     });
 
 });
