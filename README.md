@@ -23,6 +23,20 @@ import { retry } from 'ts-retry-promise';
 const result = await retry(() => Promise.resolve(1), {retries: 3});
 ```
 
+### Usage as a decorator
+
+You can decorate an exisiting function like this:
+
+```typescript
+import { retryDecorator } from 'ts-retry-promise';
+
+const asyncFunction = async (s: String) => s;
+
+const decorated = retryDecorator(asyncFunction, {timeout: 1});
+
+const result : Promise<string> = decorated("1");
+```
+
 ## Interface
 
 ```typescript
