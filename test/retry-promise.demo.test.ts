@@ -86,6 +86,17 @@ describe("Retry Promise Demo", () => {
         expect(asyncFunctionDecorated("1")).to.eventually.eq("1")
     });
 
+    it("decorator demo", async () => {
+
+        const loadUserProfile: (id: number) => Promise<{ name: string }> = async id => ({name: "Mr " + id});
+
+        const robustProfileLoader = retryDecorator(loadUserProfile, {retries: 2});
+
+        const profile = await robustProfileLoader(123);
+
+        expect(profile.name).to.eq("Mr 123");
+    })
+
 });
 
 const browser = {

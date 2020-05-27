@@ -1,5 +1,5 @@
 import {expect} from "./index";
-import {customizeRetry, defaultRetryConfig, retry, retryDecorator, wait} from "../src/retry-promise";
+import {customizeDecorator, retryDecorator, wait} from "../src/retry-promise";
 
 describe("Retry decorator test", () => {
 
@@ -8,7 +8,9 @@ describe("Retry decorator test", () => {
 
         const asyncFunctionDecorated = retryDecorator(asyncFunction);
 
-        expect(asyncFunctionDecorated("1")).to.eventually.eq("1")
+        const result = asyncFunctionDecorated("1");
+
+        expect(result).to.eventually.eq("1");
     });
 
     it("can use decorator with custom config", async () => {
@@ -28,6 +30,28 @@ describe("Retry decorator test", () => {
         const asyncFunctionDecorated: (s1: string, s2: string) => Promise<string> = retryDecorator(asyncFunction);
 
         expect(asyncFunctionDecorated("1", "2")).to.eventually.eq("12")
+    });
+
+    it("can customize decorator", async () => {
+        const asyncFunction = async (s: string) => {
+            await wait(3);
+            return s;
+        };
+
+        const myDecorator = customizeDecorator({timeout: 1});
+
+        expect(myDecorator(asyncFunction)("1")).to.be.rejectedWith("Timeout");
+    });
+
+    it("can overwrite customized decorator", async () => {
+        const asyncFunction = async (s: string) => {
+            await wait(3);
+            return s;
+        };
+
+        const myDecorator = customizeDecorator({timeout: 1});
+
+        expect(myDecorator(asyncFunction, {timeout: 5})("1")).to.eventually.eq("1");
     });
 
 });

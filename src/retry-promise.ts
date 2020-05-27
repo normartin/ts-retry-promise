@@ -46,8 +46,12 @@ export async function retry<T>(f: () => Promise<T>, config?: Partial<RetryConfig
     return timeout(effectiveConfig.timeout, (done) => _retry(f, effectiveConfig, done));
 }
 
-export function retryDecorator<T, F extends (...args: any[]) => Promise<T>>(func: F, config?: Partial<RetryConfig<T>>): (...funcArgs: Parameters<F>) => Promise<T> {
-    return (...args: Parameters<F>) => retry(() => func(...args), config);
+export function retryDecorator<T, F extends (...args: any[]) => Promise<T>>(func: F, config?: Partial<RetryConfig<T>>): (...funcArgs: Parameters<F>) => ReturnType<F> {
+    return (...args: Parameters<F>) => retry(() => func(...args), config) as ReturnType<F>;
+}
+
+export function customizeDecorator<T>(customConfig: Partial<RetryConfig<T>>): typeof retryDecorator {
+    return (args, config) => retryDecorator(args, Object.assign({}, customConfig, config));
 }
 
 // tslint:disable-next-line
