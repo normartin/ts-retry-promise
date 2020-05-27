@@ -37,11 +37,11 @@ const decoratedFunction = retryDecorator(asyncFunction, {timeout: 1});
 const result: string = await decoratedFunction("1");
 ```
 
-`decorated` is function with the same signature as `asyncFunction`, but will do retries in case of failures.
+Here `decoratedFunction` is a function with the same signature as `asyncFunction`, but will do retries in case of failures.
 
 ## Configuration
 
-`retry` and `retryDecorator` both take an optional second argument where you can configure the number of retries and timeouts:
+Both `retry` and `retryDecorator` take an optional second argument where you can configure the number of retries and timeouts:
 
 ```typescript
 export interface RetryConfig<T> {
