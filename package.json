@@ -1,6 +1,6 @@
 {
   "name": "ts-retry-promise",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "license": "MIT",
   "description": "retry for functions returning a promise",
   "repository": "https://github.com/normartin/ts-retry-promise",
