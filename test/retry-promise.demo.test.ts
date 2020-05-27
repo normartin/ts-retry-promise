@@ -1,5 +1,5 @@
 import {expect} from "./index";
-import {customizeRetry, defaultRetryConfig, retry, wait} from "../src/retry-promise";
+import {customizeRetry, defaultRetryConfig, retry, retryDecorator, wait} from "../src/retry-promise";
 
 describe("Retry Promise Demo", () => {
 
@@ -74,6 +74,28 @@ describe("Retry Promise Demo", () => {
             defaultRetryConfig.timeout = originalTimeout;
         }
     });
+
+    it("can use decorator", async () => {
+
+        type AsyncFunc = (s: string) => Promise<string>
+
+        const asyncFunction: AsyncFunc = async s => s;
+
+        const asyncFunctionDecorated: AsyncFunc = retryDecorator(asyncFunction, {timeout: 1});
+
+        expect(asyncFunctionDecorated("1")).to.eventually.eq("1")
+    });
+
+    it("decorator demo", async () => {
+
+        const loadUserProfile: (id: number) => Promise<{ name: string }> = async id => ({name: "Mr " + id});
+
+        const robustProfileLoader = retryDecorator(loadUserProfile, {retries: 2});
+
+        const profile = await robustProfileLoader(123);
+
+        expect(profile.name).to.eq("Mr 123");
+    })
 
 });
 

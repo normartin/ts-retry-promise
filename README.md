@@ -20,19 +20,28 @@ Then you can import it with:
 ```typescript
 import { retry } from 'ts-retry-promise';
 
-const result = await retry(() => Promise.resolve(1), {retries: 3});
+const result: number = await retry(() => Promise.resolve(1), {retries: 3});
 ```
 
-## Interface
+This will instantly start calling your function until it returns a resolved promise, no retries are left or a timeout occurred.
+
+If you want to add retries to an existing function, use the decorator:
 
 ```typescript
-function retry<T>(f: () => Promise<T>, config?: RetryConfig<T>): Promise<T> {}
+import { retryDecorator } from 'ts-retry-promise';
+
+const asyncFunction = async (s: String) => s;
+
+const decoratedFunction = retryDecorator(asyncFunction, {timeout: 1});
+
+const result: string = await decoratedFunction("1");
 ```
 
-_retry_ will repeatedly call _f_ until a resolved _Promise_ is returned. 
-Optionally a predicate can be specified, against which the result will be checked.
+Here `decoratedFunction` is a function with the same signature as `asyncFunction`, but will do retries in case of failures.
 
-Several aspects of the execution can be configured:
+## Configuration
+
+Both `retry` and `retryDecorator` take an optional second argument where you can configure the number of retries and timeouts:
 
 ```typescript
 export interface RetryConfig<T> {
@@ -64,6 +73,8 @@ export interface RetryConfig<T> {
 _customizeRetry_ returns a new instance of _retry_ that has the defined default configuration.
 
 ```typescript
+import { customizeRetry } from 'ts-retry-promise'; 
+
 const impatientRetry = customizeRetry({timeout: 5});
 
 await expect(impatientRetry(async () => wait(10))).to.be.rejectedWith("Timeout");
@@ -77,9 +88,36 @@ const result = await retryUntilNotEmpty(async () => [1, 2]);
 expect(result).to.deep.eq([1, 2]);
 ```
 
+
+You can do the same for decorators:
+```typescript
+import { customizeDecorator } from 'ts-retry-promise'; 
+
+const asyncFunction = async (s: string) => {
+    await wait(3);
+    return s;
+};
+
+const impatientDecorator = customizeDecorator({timeout: 1});
+
+expect(impatientDecorator(asyncFunction)("1")).to.be.rejectedWith("Timeout");
+```
+
+
 ## Samples ##
 
-_retry_ is well suited for acceptance tests (but not restricted to).
+_retryDecorator_ can be used on any function that returns a promise
+
+```typescript
+const loadUserProfile: (id: number) => Promise<{ name: string }> = async id => ({name: "Mr " + id});
+
+const robustProfileLoader = retryDecorator(loadUserProfile, {retries: 2});
+
+const profile = await robustProfileLoader(123);
+```
+
+
+_retry_ is well suited for acceptance tests (but not restricted to)
 
 ```typescript
 // ts-retry-promise/test/retry-promise.demo.test.ts
