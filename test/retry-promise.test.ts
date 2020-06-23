@@ -138,6 +138,15 @@ describe("Retry Promise", () => {
         await expect(result).to.be.rejectedWith("Timeout");
         expect(failer.calls).to.be.greaterThan(10);
     });
+
+    it("should provide last error in case of failure", async () => {
+        const error = Error("Fail");
+
+        await expect(retry(async () => {
+            throw error
+        }, {retries: 1}))
+            .to.be.eventually.rejected.with.property("lastError", error);
+    });
 });
 
 class Failer {
