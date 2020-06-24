@@ -63,7 +63,7 @@ export function customizeRetry<T>(customConfig: Partial<RetryConfig<T>>): (f: ()
 }
 
 async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, done: () => boolean): Promise<T> {
-    let latestError: Error;
+    let lastError: Error;
 
     let delay: (attempt: number, delay: number) => number;
 
@@ -96,7 +96,7 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, done: () =
             }
             config.logger("Until condition not met by " + result);
         } catch (error) {
-            latestError = error;
+            lastError = error;
             config.logger("Retry failed: " + error.message);
         }
         const millisToWait = delay(i + 1, config.delay);
@@ -106,7 +106,7 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, done: () =
             break;
         }
     }
-    throw Error(`All retries failed. Last error: ${latestError!}`);
+    throw new RetryError(`All retries failed. Last error: ${lastError!}`, lastError!);
 }
 
 export const notEmpty = (result: any) => {
@@ -115,3 +115,10 @@ export const notEmpty = (result: any) => {
     }
     return result !== null && result !== undefined;
 };
+
+export class RetryError extends Error {
+    /*  istanbul ignore next  */
+    constructor(message: string, public readonly lastError: Error) {
+        super(message);
+    }
+}

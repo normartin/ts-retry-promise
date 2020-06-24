@@ -103,6 +103,13 @@ const impatientDecorator = customizeDecorator({timeout: 1});
 expect(impatientDecorator(asyncFunction)("1")).to.be.rejectedWith("Timeout");
 ```
 
+## Failure ##
+In case `retry` failed, an _error_ is thrown. 
+You can access the error that occurred the last time the function has been retried via the property `lastError`:
+```typescript
+retry(async () => throw "1")
+    .catch(err => console.log(err.lastError)); // will print "1" 
+```
 
 ## Samples ##
 
