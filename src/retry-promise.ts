@@ -96,6 +96,10 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, done: () =
             }
             config.logger("Until condition not met by " + result);
         } catch (error) {
+            if (error.name === NotRetryableError.name) throw new RetryError(
+              `Met not retryable error. Last error: ${lastError!}`,
+              lastError!
+            )
             lastError = error;
             config.logger("Retry failed: " + error.message);
         }
@@ -122,3 +126,6 @@ export class RetryError extends Error {
         super(message);
     }
 }
+
+// tslint:disable-next-line:max-classes-per-file
+export class NotRetryableError extends Error {}
