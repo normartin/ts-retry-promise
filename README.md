@@ -111,6 +111,15 @@ retry(async () => throw "1")
     .catch(err => console.log(err.lastError)); // will print "1" 
 ```
 
+## NotRetryableError ##
+Wrapped function can throw `NotRetryableError` if retrying need to be stopped eventually:
+```typescript
+import { NotRetryableError } from 'ts-retry-promise';
+
+retry(async () => throw new NotRetryableError("This error"))
+    .catch(err => console.log(err.lastError), { retries: 'INFINITELY' });
+```
+
 ## Samples ##
 
 _retryDecorator_ can be used on any function that returns a promise
