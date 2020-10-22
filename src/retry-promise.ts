@@ -97,8 +97,8 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, done: () =
             config.logger("Until condition not met by " + result);
         } catch (error) {
             if (error.name === NotRetryableError.name) throw new RetryError(
-              `Met not retryable error. Last error: ${lastError!}`,
-              lastError!
+              `Met not retryable error. Last error: ${error}`,
+              error
             )
             lastError = error;
             config.logger("Retry failed: " + error.message);
