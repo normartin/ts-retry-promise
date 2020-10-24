@@ -1,3 +1,5 @@
+"use strict"
+
 import {timeout} from "./timeout";
 
 export interface RetryConfig<T> {
@@ -96,6 +98,12 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, done: () =
             }
             config.logger("Until condition not met by " + result);
         } catch (error) {
+            if (error.name === NotRetryableError.name) {
+                throw new RetryError(
+                  `Met not retryable error. Last error: ${error}`,
+                  error
+                )
+            }
             lastError = error;
             config.logger("Retry failed: " + error.message);
         }
@@ -122,3 +130,22 @@ export class RetryError extends Error {
         super(message);
     }
 }
+
+// tslint:disable-next-line:max-classes-per-file
+class BaseError {
+    constructor (...args: unknown[]) {
+        Error.apply(this, args as any);
+    }
+}
+
+BaseError.prototype = new Error();
+
+// tslint:disable-next-line:max-classes-per-file
+export class NotRetryableError extends BaseError {
+    constructor(message?: string) {
+        super(message);
+        Object.defineProperty(this, 'name', { value: this.constructor.name })
+    }
+}
+
+
