@@ -213,5 +213,5 @@ it("can customize default config", async () => {
 # Release instructions
 Release automation has been setup according this [guide](https://michaelzanggl.com/articles/github-actions-cd-setup/).
 
-- Create a Github release with version tag like `0.6.1`. 
-- Check the new version exists on [npmjs.com/package/ts-retry-promise](https://www.npmjs.com/package/ts-retry-promise) and has `latest` tag. 
+1. Create a Github release with version tag like `0.6.1`. 
+1. Check the new version exists on [npmjs.com/package/ts-retry-promise](https://www.npmjs.com/package/ts-retry-promise) and has `latest` tag. 
