@@ -68,8 +68,7 @@ describe("Retry decorator test", () => {
             }, {retries: 2}
         );
 
-        await expect(decorated())
-            .to.be.eventually.rejected.with.property("lastError", error);
+        await expect(decorated()).to.be.eventually.rejected.with.property("lastError", error);
     });
 
     it("should provide last error in case of NotRetryableError", async () => {
@@ -84,8 +83,7 @@ describe("Retry decorator test", () => {
             {retries: 3}
         );
 
-        await expect(decorated())
-            .to.be.eventually.rejected.with.property("lastError", error);
+        await expect(decorated()).to.be.eventually.rejected.with.property("lastError", error);
         expect(calls).to.eq(1);
     });
 });
