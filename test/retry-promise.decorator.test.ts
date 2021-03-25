@@ -1,5 +1,5 @@
 import {expect} from "./index";
-import {customizeDecorator, retryDecorator, wait} from "../src/retry-promise";
+import {customizeDecorator, NotRetryableError, retryDecorator, wait} from "../src/retry-promise";
 
 describe("Retry decorator test", () => {
 
@@ -72,4 +72,20 @@ describe("Retry decorator test", () => {
             .to.be.eventually.rejected.with.property("lastError", error);
     });
 
+    it("should provide last error in case of NotRetryableError", async () => {
+        const error = new NotRetryableError("Fail");
+        let calls = 0;
+
+        const decorated = retryDecorator(
+            async () => {
+                calls++;
+                throw error;
+            },
+            {retries: 3}
+        );
+
+        await expect(decorated())
+            .to.be.eventually.rejected.with.property("lastError", error);
+        expect(calls).to.eq(1);
+    });
 });
