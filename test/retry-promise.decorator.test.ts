@@ -54,4 +54,22 @@ describe("Retry decorator test", () => {
         expect(myDecorator(asyncFunction, {timeout: 5})("1")).to.eventually.eq("1");
     });
 
+    it("should provide last error in case of failure", async () => {
+        const error = Error("Fail");
+        let first = true;
+
+        const decorated = retryDecorator(
+            async () => {
+                if (first) {
+                    first = false;
+                    throw new Error("first");
+                }
+                throw error
+            }, {retries: 2}
+        );
+
+        await expect(decorated())
+            .to.be.eventually.rejected.with.property("lastError", error);
+    });
+
 });
