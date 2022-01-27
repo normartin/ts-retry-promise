@@ -1,15 +1,13 @@
 import {expect} from "chai";
-import * as lolex from "lolex";
-import {Clock} from "lolex";
-import {InstalledClock} from "lolex";
 import {retry} from "../src/retry-promise";
+import {install, InstalledClock} from "@sinonjs/fake-timers";
 
 describe("Backoff tests", () => {
 
-    let mockClock: InstalledClock<Clock>;
+    let mockClock: InstalledClock;
 
     beforeEach(() => {
-        mockClock = lolex.install();
+        mockClock = install();
     });
 
     afterEach(() => {
