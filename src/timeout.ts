@@ -1,4 +1,8 @@
-export const timeout: <T>(millis: number, f: (done: () => boolean) => Promise<T>) => Promise<T> = (millies, f) => {
+export const timeout: <T>(millis: number | "INFINITELY", f: (done: () => boolean) => Promise<T>) => Promise<T> = (millies, f) => {
+
+    if (millies === "INFINITELY"){
+        return f(() => false)
+    }
 
     let done = false;
     const doneF = () => done;

@@ -16,7 +16,7 @@ export interface RetryConfig<T> {
     logger: (msg: string) => void;
 
     // overall timeout in ms (default: 60 * 1000)
-    timeout: number;
+    timeout: number | "INFINITELY";
 
     // increase delay with every retry (default: "FIXED")
     backoff: "FIXED" | "EXPONENTIAL" | "LINEAR" | ((attempt: number, delay: number) => number);
