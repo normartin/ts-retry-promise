@@ -76,6 +76,12 @@ describe("Retry Promise", () => {
         await expect(shortRetry(async () => wait(10))).to.be.rejectedWith("Timeout");
     });
 
+    it("customized retry should return customizable retry", async () => {
+        const customRetry = customizeRetry({timeout: 5});
+
+        await customRetry(async () => wait(1), {delay: 1});
+    });
+
     it("can customize default config", async () => {
         const originalTimeout = defaultRetryConfig.timeout;
         try {
