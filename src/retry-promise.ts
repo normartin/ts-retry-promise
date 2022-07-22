@@ -108,8 +108,8 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, done: () =
 
             if (error.name === NotRetryableError.name) {
                 throw new RetryError(
-                    `Met not retryable error. Last error: ${error}`,
-                    error
+                  `Met not retryable error. Last error: ${error}`,
+                  error
                 )
             }
             lastError = error;
@@ -141,7 +141,7 @@ export class RetryError extends Error {
 
 // tslint:disable-next-line:max-classes-per-file
 class BaseError {
-    constructor(...args: unknown[]) {
+    constructor (...args: unknown[]) {
         Error.apply(this, args as any);
     }
 }
@@ -152,7 +152,7 @@ BaseError.prototype = new Error();
 export class NotRetryableError extends BaseError {
     constructor(message?: string) {
         super(message);
-        Object.defineProperty(this, 'name', {value: this.constructor.name})
+        Object.defineProperty(this, 'name', { value: this.constructor.name })
     }
 }
 
