@@ -159,7 +159,7 @@ describe("Retry Promise", () => {
 
         const result = retry(() => failer.run(), {retryIf: () => false});
 
-        await expect(result).to.eventually.rejected
+        await expect(result).to.eventually.be.rejected
         expect(failer.calls).to.eq(1);
     });
 
@@ -170,13 +170,13 @@ describe("Retry Promise", () => {
         const result = retry(() => {
             throw error
         }, {
-            retryIf: () => {
-                passedError = error
+            retryIf: e => {
+                passedError = e
                 return false;
             }
         });
         await expect(result).to.eventually.be.rejected;
-        await expect(passedError).to.eq(error);
+        expect(passedError).to.eq(error);
     });
 });
 
