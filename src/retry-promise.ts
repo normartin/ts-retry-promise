@@ -23,6 +23,9 @@ export interface RetryConfig<T> {
 
     // maximal backoff in ms (default: 5 * 60 * 1000)
     maxBackOff: number;
+
+    // allows to abort retrying for certain errors
+    retryIf: (error: any) => boolean
 }
 
 const fixedBackoff = (attempt: number, delay: number) => delay;
@@ -37,6 +40,7 @@ export const defaultRetryConfig: RetryConfig<any> = {
     retries: 10,
     timeout: 60 * 1000,
     until: () => true,
+    retryIf: () => true
 };
 
 export async function wait(ms: number): Promise<void> {
@@ -98,6 +102,10 @@ async function _retry<T>(f: () => Promise<T>, config: RetryConfig<T>, done: () =
             }
             config.logger("Until condition not met by " + result);
         } catch (error) {
+            if (!config.retryIf(error)) {
+                throw error;
+            }
+
             if (error.name === NotRetryableError.name) {
                 throw new RetryError(
                   `Met not retryable error. Last error: ${error}`,

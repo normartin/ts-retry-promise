@@ -153,6 +153,31 @@ describe("Retry Promise", () => {
         }, {retries: 1}))
             .to.be.eventually.rejected.with.property("lastError", error);
     });
+
+    it("should stop retrying if retryIf is false", async () => {
+        const failer = new Failer(1);
+
+        const result = retry(() => failer.run(), {retryIf: () => false});
+
+        await expect(result).to.eventually.be.rejected
+        expect(failer.calls).to.eq(1);
+    });
+
+    it("should provide error to retryIf function", async () => {
+        const error = Error("fail")
+        let passedError: Error | undefined;
+
+        const result = retry(() => {
+            throw error
+        }, {
+            retryIf: e => {
+                passedError = e
+                return false;
+            }
+        });
+        await expect(result).to.eventually.be.rejected;
+        expect(passedError).to.eq(error);
+    });
 });
 
 class Failer {
