@@ -68,7 +68,7 @@ export interface RetryConfig<T> {
     // maximal backoff in ms (default: 5 * 60 * 1000)
     maxBackOff?: number;
 
-    // allows to abort retrying for certain errors (default: () => true)
+    // allows to abort retrying for certain errors, will retry until false (default: () => true)
     retryIf: (error: any) => boolean
 }
 ```
