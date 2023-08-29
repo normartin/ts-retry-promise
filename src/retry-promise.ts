@@ -2,15 +2,12 @@
 
 import {timeout} from "./timeout";
 
-export interface RetryConfig<T = void> {
+export interface BasicRetryConfig {
     // number of maximal retry attempts (default: 10)
     retries: number | "INFINITELY";
 
     // wait time between retries in ms (default: 100)
     delay: number;
-
-    // check the result, will retry until true (default: () => true)
-    until: (t: T) => boolean;
 
     // log events (default: () => undefined)
     logger: (msg: string) => void;
@@ -26,6 +23,11 @@ export interface RetryConfig<T = void> {
 
     // allows to abort retrying for certain errors
     retryIf: (error: any) => boolean
+}
+
+export interface RetryConfig<T = void> extends BasicRetryConfig {
+    // check the result, will retry until true (default: () => true)
+    until: (t: T) => boolean;
 }
 
 const fixedBackoff = (attempt: number, delay: number) => delay;
