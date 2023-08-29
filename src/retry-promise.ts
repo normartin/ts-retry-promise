@@ -2,7 +2,7 @@
 
 import {timeout} from "./timeout";
 
-export interface RetryConfig<T> {
+export interface RetryConfig<T = void> {
     // number of maximal retry attempts (default: 10)
     retries: number | "INFINITELY";
 
