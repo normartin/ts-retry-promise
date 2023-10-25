@@ -100,7 +100,7 @@ describe("Retry Promise Demo", () => {
     it("NotRetryableError demo", async () => {
 
         const result = retry(
-            async () => {throw new NotRetryableError("This error");},
+            async () => { throw new NotRetryableError("This error"); },
             { retries: 'INFINITELY' })
             // tslint:disable-next-line:no-console
             .catch(err => console.log(err.lastError.message));  // will print "This error"

@@ -1,5 +1,5 @@
 import {expect} from "./index";
-import {retry, NotRetryableError, RetryError} from "../src/retry-promise";
+import {retry, NotRetryableError} from "../src/retry-promise";
 
 describe("NotRetryableError Error", () => {
 
