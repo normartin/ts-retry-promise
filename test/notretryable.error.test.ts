@@ -1,5 +1,5 @@
 import {expect} from "./index";
-import {retry, NotRetryableError} from "../src/retry-promise";
+import {retry, NotRetryableError, RetryError} from "../src/retry-promise";
 
 describe("NotRetryableError Error", () => {
 
@@ -9,6 +9,20 @@ describe("NotRetryableError Error", () => {
 
     expect(result).to.be.rejected;
     expect(failer.calls).to.eq(1);
+  });
+
+  it("should have RetryError in lastError", async () => {
+    const error = new NotRetryableError("stop retrying");
+
+    const result = retry(async () => {throw error});
+
+    expect(result).to.be.eventually.rejected.with.property("lastError").eq(error);
+  });
+
+  it("RetryError should have message", async () => {
+      const error = new NotRetryableError("stop retrying");
+
+      expect(error.message).to.eq("stop retrying");
   });
 
 });
