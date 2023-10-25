@@ -121,8 +121,8 @@ Wrapped function can throw `NotRetryableError` if retrying need to be stopped ev
 ```typescript
 import { NotRetryableError } from 'ts-retry-promise';
 
-retry(async () => throw new NotRetryableError("This error"))
-    .catch(err => console.log(err.lastError), { retries: 'INFINITELY' });
+retry(async () => { throw new NotRetryableError("This error") }, { retries: 'INFINITELY' })
+    .catch(err => console.log(err.lastError.message));  // will print "This error"
 ```
 
 ## Samples ##

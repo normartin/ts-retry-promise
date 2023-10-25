@@ -140,9 +140,9 @@ export class RetryError extends Error {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-class BaseError extends Error{
-    constructor (message?: string) {
-        super(message);
+class BaseError {
+    constructor (public message?: string, ...args: unknown[]) {
+        Error.apply(this, args as any);
     }
 }
 
