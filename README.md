@@ -1,6 +1,6 @@
 # ts-retry-promise #
 
-[![Build Status](https://github.com/normartin/ts-retry-promise/workflows/Node.js%20CI/badge.svg)](https://github.com/normartin/ts-retry-promise/actions?query=workflow%3A%22Node.js+CI%22)
+[![Build Status](https://github.com/normartin/ts-retry-promise/workflows/Build/badge.svg?branch=master)](https://github.com/normartin/ts-retry-promise/actions/workflows/ci.yml?query=branch%3Amaster)
 [![Coverage Status](https://coveralls.io/repos/github/normartin/ts-retry-promise/badge.svg?branch=master)](https://coveralls.io/github/normartin/ts-retry-promise?branch=master)
 [![Dependencies](https://img.shields.io/badge/Dependencies-none-brightgreen)](https://github.com/normartin/ts-retry-promise/blob/master/package.json)
 [![NPM](https://img.shields.io/npm/v/ts-retry-promise.svg?color=#555)](https://www.npmjs.com/package/ts-retry-promise)
