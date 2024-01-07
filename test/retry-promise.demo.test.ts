@@ -1,5 +1,5 @@
 import {expect} from "./index";
-import {customizeRetry, defaultRetryConfig, retry, retryDecorator, wait} from "../src/retry-promise";
+import {customizeRetry, defaultRetryConfig, NotRetryableError, retry, retryDecorator, wait} from "../src/retry-promise";
 
 describe("Retry Promise Demo", () => {
 
@@ -95,6 +95,17 @@ describe("Retry Promise Demo", () => {
         const profile = await robustProfileLoader(123);
 
         expect(profile.name).to.eq("Mr 123");
+    })
+
+    it("NotRetryableError demo", async () => {
+
+        const result = retry(
+            async () => { throw new NotRetryableError("This error"); },
+            { retries: 'INFINITELY' })
+            // tslint:disable-next-line:no-console
+            .catch(err => console.log(err.lastError.message));  // will print "This error"
+
+        await result;
     })
 
 });

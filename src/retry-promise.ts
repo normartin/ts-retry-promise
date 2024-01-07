@@ -141,7 +141,7 @@ export class RetryError extends Error {
 
 // tslint:disable-next-line:max-classes-per-file
 class BaseError {
-    constructor (...args: unknown[]) {
+    constructor (public message?: string, ...args: unknown[]) {
         Error.apply(this, args as any);
     }
 }
