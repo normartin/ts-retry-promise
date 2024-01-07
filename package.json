@@ -31,14 +31,10 @@
     "validate": "npm run tslint && npm run coverage",
     "prerelease": "npm run validate",
     "release": "npm run build && npm publish",
-    "mutation-test": "stryker run",
     "build-browser-tests": "browserify -p tsify test/browser/browser-tests.ts > test/browser/bundle.js"
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^8.1.0",
-    "@stryker-mutator/core": "^5.6.1",
-    "@stryker-mutator/mocha-runner": "^5.6.1",
-    "@stryker-mutator/typescript-checker": "^5.6.1",
     "@types/chai": "^4.2.11",
     "@types/chai-as-promised": "^7.1.2",
     "@types/mocha": "^9.0.1",
