@@ -13,7 +13,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE.txt"
+    "LICENSE.txt",
+    "src"
   ],
   "main": "dist/retry-promise.js",
   "types": "dist/retry-promise.d.ts",
